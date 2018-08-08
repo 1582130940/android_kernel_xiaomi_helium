@@ -1211,7 +1211,6 @@ static int taiko_mad_input_put(struct snd_kcontrol *kcontrol,
 		return -EINVAL;
 	}
 
-
 	micb_4_int_reg = taiko->resmgr.reg_addr->micb_4_int_rbias;
 	pr_debug("%s: taiko_mad_input = %s\n", __func__,
 			taiko_conn_mad_text[taiko_mad_input]);

@@ -14,7 +14,6 @@
 #include <linux/errno.h>
 #include <sound/apr_audio-v2.h>
 
-
 /* ERROR STRING */
 /* Success. The operation completed with no errors. */
 #define ADSP_EOK_STR          "ADSP_EOK"
@@ -61,12 +60,10 @@
 /* Unexpected error code. */
 #define ADSP_ERR_MAX_STR      "ADSP_ERR_MAX"
 
-
 struct adsp_err_code {
 	int		lnx_err_code;
 	char	*adsp_err_str;
 };
-
 
 static struct adsp_err_code adsp_err_code_info[ADSP_ERR_MAX+1] = {
 	{ 0, ADSP_EOK_STR},

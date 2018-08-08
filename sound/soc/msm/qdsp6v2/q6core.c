@@ -170,8 +170,7 @@ static int32_t aprv2_core_fn_q(struct apr_client_data *data, void *priv)
 		}
 		wake_up(&q6core_lcl.cmd_req_wait);
 		break;
-
-	 case AVCS_CMDRSP_GET_LICENSE_VALIDATION_RESULT:
+	case AVCS_CMDRSP_GET_LICENSE_VALIDATION_RESULT:
 		payload1 = data->payload;
 		pr_debug("%s: cmd = LICENSE_VALIDATION_RESULT, result = 0x%x\n",
 				__func__, payload1[0]);
