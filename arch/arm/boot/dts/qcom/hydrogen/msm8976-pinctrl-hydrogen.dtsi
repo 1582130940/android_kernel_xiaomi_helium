@@ -338,7 +338,6 @@
 				drive-strength = <2>;
 				bias-disable;
 			};
-
 		};
 
 		pmx_mdss: pmx_mdss {

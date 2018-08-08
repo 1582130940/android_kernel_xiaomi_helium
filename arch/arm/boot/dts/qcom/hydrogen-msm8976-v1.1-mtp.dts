@@ -13,7 +13,6 @@
  */
 
 /dts-v1/;
-
 #include "msm8976-v1.1.dtsi"
 #include "hydrogen/hydrogen-msm8976-mtp.dtsi"
 

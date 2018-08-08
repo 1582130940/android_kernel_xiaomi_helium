@@ -215,7 +215,7 @@
 	};
 
 	clock_gcc_gfx: qcom,gcc-gfx@1800000 {
-                compatible = "qcom,gcc-gfx-8976";
+		compatible = "qcom,gcc-gfx-8976";
                 reg = <0x1800000 0x80000>;
                 reg-names = "cc_base";
 		vdd_gfx-supply = <&gfx_vreg_corner>;
@@ -230,7 +230,7 @@
 			< 432000000   6 >,  /* NOM       */
 			< 480000000   7 >,  /* Turbo     */
 			< 550000000   8 >,  /* Super Turbo */
-			< 600000000   9 >;  /* Super Turbo */
+			< 621330000   9 >;  /* Super Turbo */
 		#clock-cells = <1>;
 	};
 
@@ -310,7 +310,8 @@
 			< 1190400000 5>,
 			< 1305600000 6>,
 			< 1382400000 7>,
-			< 1401600000 8>;
+			< 1401600000 8>,
+			< 1440000000 9>;
 		qcom,speed0-bin-v0-c1 =
 			<          0 0>,
 			<  400000000 1>,
@@ -318,7 +319,10 @@
 			< 1190400000 3>,
 			< 1382400000 4>,
 			< 1612800000 5>,
-			< 1747200000 6>;
+			< 1747200000 6>,
+			< 1843200000 7>,
+			< 1958400000 8>,
+			< 2016000000 9>;
 		qcom,speed0-bin-v0-cci =
 			<          0 0>,
 			<  307200000 1>,
@@ -345,7 +349,9 @@
 			< 1382400000 4>,
 			< 1612800000 5>,
 			< 1747200000 6>,
-			< 1804800000 7>;
+			< 1843200000 7>,
+			< 1958400000 8>,
+			< 2016000000 9>;
 		qcom,speed1-bin-v0-cci =
 			<          0 0>,
 			<  307200000 1>,
@@ -435,7 +441,7 @@
 				< 1190400  4101 >,	/* SVS+  */
 				< 1382400  5712 >,	/* NOM   */
 				< 1612800  6152 >,	/* TURBO */
-				< 1804800  7104 >;
+				< 2016000  7104 >;
 		};
 
 		mincpubw-cpufreq {
@@ -463,7 +469,7 @@
 				< 1190400 403200 >,
 				< 1382400 441600 >,
 				< 1612800 556800 >,
-				< 1804800 614400 >;
+				< 2016000 614400 >;
 		};
 	};
 
@@ -502,7 +508,9 @@
 			< 1382400 >,
 			< 1612800 >,
 			< 1747200 >,
-			< 1804800 >;
+			< 1843200 >,
+			< 1958400 >,
+			< 2016000 >;
 	};
 
 	timer {
@@ -823,9 +831,9 @@
 		compatible = "qcom,bcl";
 		qcom,bcl-enable;
 		qcom,bcl-framework-interface;
-		qcom,bcl-freq-control-list = <&CPU4 &CPU5 &CPU6 &CPU7>;
-		qcom,bcl-hotplug-list = <&CPU4 &CPU5 &CPU6 &CPU7>;
-		qcom,bcl-soc-hotplug-list = <&CPU4 &CPU5 &CPU6 &CPU7>;
+		/delete-property/ qcom,bcl-freq-control-list;
+		/delete-property/ qcom,bcl-hotplug-list;
+		/delete-property/ qcom,bcl-soc-hotplug-list;
 		qcom,ibat-monitor {
 			qcom,high-threshold-uamp = <4200000>;
 			qcom,low-threshold-uamp = <3400000>;
@@ -1262,7 +1270,7 @@
 	android_usb: android_usb@086000c8 {
 		compatible = "qcom,android-usb";
 		reg = <0x086000c8 0xc8>;
-		qcom,pm-qos-latency = <2 1001 12701>;
+		qcom,pm-qos-latency = <59 1001 12701>;
 	};
 
 	fsusb: qcom,ehci-host@79c0000 {
@@ -2113,7 +2121,7 @@
 		qcom,master-id = <86>;
 	};
 
-	qcom,,msm-ssc-sensors {
+	qcom,msm-ssc-sensors {
 		compatible = "qcom,msm-ssc-sensors";
 	};
 
@@ -2791,7 +2799,7 @@
 			"cdc-vdd-px";
 
 		qcom,cdc-micbias1-mv = <1800>;
-		qcom,cdc-micbias2-mv = <1800>;
+		qcom,cdc-micbias2-mv = <2700>;
 		qcom,cdc-micbias3-mv = <1800>;
 		qcom,cdc-micbias4-mv = <1800>;
 
