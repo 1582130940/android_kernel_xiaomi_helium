@@ -1605,7 +1605,6 @@ static inline int got_boost_kick(void)
 	return test_bit(BOOST_KICK, &rq->hmp_flags);
 }
 
-
 static inline void clear_boost_kick(int cpu)
 {
 	struct rq *rq = cpu_rq(cpu);
