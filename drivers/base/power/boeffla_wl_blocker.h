@@ -18,6 +18,6 @@
 
 #define LIST_WL_DEFAULT				"qcom_rx_wakelock;wlan;wlan_wow_wl;wlan_extscan_wl;netmgr_wl;NETLINK;IPA_WS;sensor_ind;[timerfd]"
 
-#define LENGTH_LIST_WL				255
-#define LENGTH_LIST_WL_DEFAULT		125
+#define LENGTH_LIST_WL				2048
+#define LENGTH_LIST_WL_DEFAULT		155
 #define LENGTH_LIST_WL_SEARCH		LENGTH_LIST_WL + LENGTH_LIST_WL_DEFAULT + 5
