@@ -39,12 +39,12 @@
 /* Tuneables */
 #define WG_DEBUG		0
 #define WG_DEFAULT		0
-#define DT2W_DEFAULT		0
+#define DT2W_DEFAULT		1
 #define S2W_DEFAULT		0
 #define S2S_DEFAULT		0
 #define WG_PWRKEY_DUR           60
 
-/* Redmi Note 3 */
+/* Mi MAX/Mi MAX Prime/Redmi Note 3 */
 #define SWEEP_Y_MAX             1920
 #define SWEEP_X_MAX             1080
 #define SWEEP_EDGE		90
