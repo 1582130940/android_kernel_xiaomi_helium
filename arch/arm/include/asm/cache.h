@@ -30,7 +30,6 @@
 #define PREFETCH_DISTANCE 3
 #endif
 
-
 /*
  * Memory returned by kmalloc() may be used for DMA, so we must make
  * sure that all such allocations are cache aligned. Otherwise,
