@@ -91,7 +91,6 @@ endif
 # The O= assignment takes precedence over the KBUILD_OUTPUT environment
 # variable.
 
-
 # KBUILD_SRC is set on invocation of make in OBJ directory
 # KBUILD_SRC is not intended to be used by the regular user (for now)
 ifeq ($(KBUILD_SRC),)
@@ -158,7 +157,6 @@ VPATH		:= $(srctree)$(if $(KBUILD_EXTMOD),:$(KBUILD_EXTMOD))
 
 export srctree objtree VPATH
 
-
 # SUBARCH tells the usermode build what the underlying arch is.  That is set
 # first, and if a usermode build is happening, the "ARCH=um" on the command
 # line overrides the setting of ARCH below.  If a native build is happening,
@@ -192,7 +190,7 @@ SUBARCH := $(shell uname -m | sed -e s/i.86/x86/ -e s/x86_64/x86/ \
 # "make" in the configured kernel build directory always uses that.
 # Default value for CROSS_COMPILE is not to prefix executables
 # Note: Some architectures assign CROSS_COMPILE in their arch/*/Makefile
-ARCH		?= $(SUBARCH)
+ARCH		?= arm64
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
 
 # Architecture as present in compile.h
@@ -315,7 +313,6 @@ endif
 
 export quiet Q KBUILD_VERBOSE
 
-
 # Look for make include files relative to root of kernel src
 MAKEFLAGS += --include-dir=$(srctree)
 
@@ -345,11 +342,10 @@ CHECKFLAGS     := -D__linux__ -Dlinux -D__STDC__ -Dunix -D__unix__ \
 		  -Wbitwise -Wno-return-void $(CF)
 CFLAGS_MODULE   =
 AFLAGS_MODULE   =
-LDFLAGS_MODULE  =
+LDFLAGS_MODULE  = --strip-debug
 CFLAGS_KERNEL	=
 AFLAGS_KERNEL	=
 CFLAGS_GCOV	= -fprofile-arcs -ftest-coverage
-
 
 # Use USERINCLUDE when you must reference the UAPI directories only.
 USERINCLUDE    := \
@@ -371,12 +367,23 @@ LINUXINCLUDE    := \
 
 KBUILD_CPPFLAGS := -D__KERNEL__
 
-KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
+KBUILD_CFLAGS   := -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
 		   -Werror-implicit-function-declaration \
 		   -Wno-format-security \
 		   -fno-delete-null-pointer-checks \
+		   -fdiagnostics-color=always \
+		   -Wno-unused-variable -Wno-unused-function -Wno-unused-label \
+		   -g0 -DNDEBUG \
+		   -fivopts -fopenmp -ffast-math \
+		   -fmodulo-sched -fmodulo-sched-allow-regmoves \
 		   -std=gnu89
+
+# Optimization for MSM8956/MSM8976
+KBUILD_CFLAGS	+= $(call cc-option,-march=armv8-a+crypto+crc)
+KBUILD_CFLAGS	+= $(call cc-option,-mcpu=cortex-a72)
+KBUILD_CFLAGS	+= $(call cc-option,-mcpu=cortex-a53+crypto+crc)
+KBUILD_CFLAGS	+= $(call cc-option,-mtune=cortex-a72.cortex-a53)
 
 KBUILD_AFLAGS_KERNEL :=
 KBUILD_CFLAGS_KERNEL :=
@@ -592,9 +599,9 @@ KBUILD_CFLAGS += $(call cc-option,-fno-reorder-blocks,) \
                  $(call cc-option,-fno-partial-inlining)
 endif
 
-ifneq ($(CONFIG_FRAME_WARN),0)
-KBUILD_CFLAGS += $(call cc-option,-Wframe-larger-than=${CONFIG_FRAME_WARN})
-endif
+#ifneq ($(CONFIG_FRAME_WARN),0)
+#KBUILD_CFLAGS += $(call cc-option,-Wframe-larger-than=${CONFIG_FRAME_WARN})
+#endif
 
 # Handle stack protector mode.
 ifdef CONFIG_CC_STACKPROTECTOR_REGULAR
@@ -621,18 +628,18 @@ KBUILD_CFLAGS += $(stackp-flag)
 # Use make W=1 to enable this warning (see scripts/Makefile.build)
 KBUILD_CFLAGS += $(call cc-disable-warning, unused-but-set-variable)
 
-ifdef CONFIG_FRAME_POINTER
-KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
-else
+#ifdef CONFIG_FRAME_POINTER
+#KBUILD_CFLAGS	+= -fno-omit-frame-pointer -fno-optimize-sibling-calls
+#else
 # Some targets (ARM with Thumb2, for example), can't be built with frame
 # pointers.  For those, we don't have FUNCTION_TRACER automatically
 # select FRAME_POINTER.  However, FUNCTION_TRACER adds -pg, and this is
 # incompatible with -fomit-frame-pointer with current GCC, so we don't use
 # -fomit-frame-pointer with FUNCTION_TRACER.
-ifndef CONFIG_FUNCTION_TRACER
+#ifndef CONFIG_FUNCTION_TRACER
 KBUILD_CFLAGS	+= -fomit-frame-pointer
-endif
-endif
+#endif
+#endif
 
 KBUILD_CFLAGS   += $(call cc-option, -fno-var-tracking-assignments)
 
@@ -646,19 +653,19 @@ KBUILD_CFLAGS 	+= $(call cc-option, -femit-struct-debug-baseonly) \
 		   $(call cc-option,-fno-var-tracking)
 endif
 
-ifdef CONFIG_FUNCTION_TRACER
-ifdef CONFIG_HAVE_FENTRY
-CC_USING_FENTRY	:= $(call cc-option, -mfentry -DCC_USING_FENTRY)
-endif
-KBUILD_CFLAGS	+= -pg $(CC_USING_FENTRY)
-KBUILD_AFLAGS	+= $(CC_USING_FENTRY)
-ifdef CONFIG_DYNAMIC_FTRACE
-	ifdef CONFIG_HAVE_C_RECORDMCOUNT
-		BUILD_C_RECORDMCOUNT := y
-		export BUILD_C_RECORDMCOUNT
-	endif
-endif
-endif
+#ifdef CONFIG_FUNCTION_TRACER
+#ifdef CONFIG_HAVE_FENTRY
+#CC_USING_FENTRY	:= $(call cc-option, -mfentry -DCC_USING_FENTRY)
+#endif
+#KBUILD_CFLAGS	+= -pg $(CC_USING_FENTRY)
+#KBUILD_AFLAGS	+= $(CC_USING_FENTRY)
+#ifdef CONFIG_DYNAMIC_FTRACE
+#	ifdef CONFIG_HAVE_C_RECORDMCOUNT
+#		BUILD_C_RECORDMCOUNT := y
+#		export BUILD_C_RECORDMCOUNT
+#	endif
+#endif
+#endif
 
 # We trigger additional mismatches with less inlining
 ifdef CONFIG_DEBUG_SECTION_MISMATCH
@@ -747,7 +754,6 @@ mod_strip_cmd = true
 endif # INSTALL_MOD_STRIP
 export mod_strip_cmd
 
-
 ifdef CONFIG_MODULE_SIG_ALL
 MODSECKEY = ./signing_key.priv
 MODPUBKEY = ./signing_key.x509
@@ -757,7 +763,6 @@ else
 mod_sign_cmd = true
 endif
 export mod_sign_cmd
-
 
 ifeq ($(KBUILD_EXTMOD),)
 core-y		+= kernel/ mm/ fs/ ipc/ security/ crypto/ block/
@@ -825,7 +830,6 @@ $(vmlinux-dirs): prepare scripts
 include/config/kernel.release: include/config/auto.conf FORCE
 	$(Q)rm -f $@
 	$(Q)echo "$(KERNELVERSION)$$($(CONFIG_SHELL) $(srctree)/scripts/setlocalversion $(srctree))" > $@
-
 
 # Things we need to do before we recursively start building the kernel
 # or the modules are listed in "prepare".
@@ -1093,7 +1097,6 @@ distclean: mrproper
 		-o -name '*%' -o -name '.*.cmd' -o -name 'core' \) \
 		-type f -print | xargs rm -f
 
-
 # Packaging of the kernel to various formats
 # ---------------------------------------------------------------------------
 # rpm target kept for backward compatibility
@@ -1105,7 +1108,6 @@ package-dir	:= $(srctree)/scripts/package
 	$(Q)$(MAKE) $(build)=$(package-dir) $@
 rpm: include/config/kernel.release FORCE
 	$(Q)$(MAKE) $(build)=$(package-dir) $@
-
 
 # Brief documentation of the typical targets used
 # ---------------------------------------------------------------------------
@@ -1191,7 +1193,6 @@ help:
 	@echo  'Execute "make" or "make all" to build all targets marked with [*] '
 	@echo  'For further info see the ./README file'
 
-
 help-board-dirs := $(addprefix help-,$(board-dirs))
 
 help-boards: $(help-board-dirs)
@@ -1204,7 +1205,6 @@ $(help-board-dirs): help-%:
 		$(foreach b, $(boards-per-dir), \
 		printf "  %-24s - Build for %s\\n" $*/$(b) $(subst _defconfig,,$(b));) \
 		echo '')
-
 
 # Documentation targets
 # ---------------------------------------------------------------------------
