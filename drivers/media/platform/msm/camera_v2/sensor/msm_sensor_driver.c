@@ -653,10 +653,8 @@ static int32_t msm_sensor_driver_is_special_support(
 	return rc;
 }
 
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 extern int hydrogen_get_back_sensor_name(char *);
 extern int hydrogen_get_front_sensor_name(char *);
-#endif
 
 /* static function definition */
 int32_t msm_sensor_driver_probe(void *setting,
@@ -670,10 +668,8 @@ int32_t msm_sensor_driver_probe(void *setting,
 
 	unsigned long                        mount_pos = 0;
 	uint32_t                             is_yuv;
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 	char hydrogen_back_sensor_name[32];
 	char hydrogen_front_sensor_name[32];
-#endif
 
 	/* Validate input parameters */
 	if (!setting) {
@@ -757,7 +753,6 @@ int32_t msm_sensor_driver_probe(void *setting,
 		}
 	}
 
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 	if (strncmp(slave_info->eeprom_name, "dw9763", strlen("dw9763")) == 0) {
 		hydrogen_get_back_sensor_name(hydrogen_back_sensor_name);
 		CDBG("slave_info sensor_name = %s, back_sensor_name - %s\n",
@@ -778,22 +773,6 @@ int32_t msm_sensor_driver_probe(void *setting,
 			rc = -EFAULT;
 			goto free_slave_info;
 		}
-	}
-#endif
-
-	if (strlen(slave_info->sensor_name) >= MAX_SENSOR_NAME ||
-		strlen(slave_info->eeprom_name) >= MAX_SENSOR_NAME ||
-		strlen(slave_info->actuator_name) >= MAX_SENSOR_NAME ||
-		strlen(slave_info->ois_name) >= MAX_SENSOR_NAME) {
-		pr_err("failed: name len greater than 32.\n");
-		pr_err("sensor name len:%zu, eeprom name len: %zu.\n",
-			strlen(slave_info->sensor_name),
-			strlen(slave_info->eeprom_name));
-		pr_err("actuator name len: %zu, ois name len:%zu.\n",
-			strlen(slave_info->actuator_name),
-			strlen(slave_info->ois_name));
-		rc = -EINVAL;
-		goto free_slave_info;
 	}
 
 	/* Print slave info */

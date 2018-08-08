@@ -1043,11 +1043,7 @@ static int get_prop_batt_temp(struct smbchg_chip *chip)
 	return temp;
 }
 
-#ifdef CONFIG_MACH_XIAOMI_KENZO
-#define DEFAULT_BATT_CAPACITY_FULL	4000000
-#else
 #define DEFAULT_BATT_CAPACITY_FULL	4850000
-#endif
 static int get_prop_batt_capacity_full(struct smbchg_chip *chip)
 {
 	int uah, rc;

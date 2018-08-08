@@ -27,11 +27,8 @@ DEFINE_MSM_MUTEX(msm_flash_mutex);
 
 static struct v4l2_file_operations msm_flash_v4l2_subdev_fops;
 static struct led_trigger *torch_trigger;
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 static struct msm_flash_ctrl_t *g_fctrl;
 static unsigned char g_flashlight_brightness;
-#endif
-
 static const struct of_device_id msm_flash_i2c_dt_match[] = {
 	{.compatible = "qcom,camera-flash"},
 	{}
@@ -108,7 +105,6 @@ static struct led_classdev msm_torch_led[MAX_LED_TRIGGERS] = {
 	},
 };
 
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 static void msm_pmic_flashlight_brightness_set(struct led_classdev *led_cdev,
 		enum led_brightness value)
 {
@@ -179,7 +175,6 @@ int32_t msm_flashlight_create_classdev(struct platform_device *pdev,
 	}
 	return 0;
 }
-#endif
 
 static int32_t msm_torch_create_classdev(struct platform_device *pdev,
 				void *data)
@@ -462,9 +457,7 @@ static int32_t msm_flash_i2c_release(
 		pr_err("%s:%d failed: %pK %pK\n",
 			__func__, __LINE__, &flash_ctrl->power_info,
 			&flash_ctrl->flash_i2c_client);
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 		flash_ctrl->flash_state = MSM_CAMERA_FLASH_RELEASE;
-#endif
 		return -EINVAL;
 	}
 
@@ -476,9 +469,7 @@ static int32_t msm_flash_i2c_release(
 			__func__, __LINE__);
 		return -EINVAL;
 	}
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 	flash_ctrl->flash_state = MSM_CAMERA_FLASH_RELEASE;
-#endif
 	return 0;
 }
 
@@ -593,7 +584,6 @@ static int32_t msm_flash_init(
 			flash_data->cfg.flash_init_info->flash_driver_type);
 	}
 
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 	if (flash_ctrl->func_tbl->camera_flash_init) {
 	rc = flash_ctrl->func_tbl->camera_flash_init(
 			flash_ctrl, flash_data);
@@ -603,15 +593,6 @@ static int32_t msm_flash_init(
 		return rc;
 		}
 	}
-#else
-	rc = flash_ctrl->func_tbl->camera_flash_init(
-			flash_ctrl, flash_data);
-	if (rc < 0) {
-		pr_err("%s:%d camera_flash_init failed rc = %d",
-			__func__, __LINE__, rc);
-		return rc;
-	}
-#endif
 
 	flash_ctrl->flash_state = MSM_CAMERA_FLASH_INIT;
 
@@ -784,9 +765,7 @@ static int32_t msm_flash_config(struct msm_flash_ctrl_t *flash_ctrl,
 	switch (flash_data->cfg_type) {
 	case CFG_FLASH_INIT:
 		rc = msm_flash_init_prepare(flash_ctrl, flash_data);
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 		g_flashlight_brightness = 0;
-#endif
 		break;
 	case CFG_FLASH_RELEASE:
 		if (flash_ctrl->flash_state == MSM_CAMERA_FLASH_INIT)
@@ -797,27 +776,21 @@ static int32_t msm_flash_config(struct msm_flash_ctrl_t *flash_ctrl,
 		if (flash_ctrl->flash_state == MSM_CAMERA_FLASH_INIT) {
 			rc = flash_ctrl->func_tbl->camera_flash_off(
 				flash_ctrl, flash_data);
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 			g_flashlight_brightness = 0;
-#endif
 		}
 		break;
 	case CFG_FLASH_LOW:
 		if (flash_ctrl->flash_state == MSM_CAMERA_FLASH_INIT) {
 			rc = flash_ctrl->func_tbl->camera_flash_low(
 				flash_ctrl, flash_data);
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 			g_flashlight_brightness = 100;
-#endif
 		}
 		break;
 	case CFG_FLASH_HIGH:
 		if (flash_ctrl->flash_state == MSM_CAMERA_FLASH_INIT) {
 			rc = flash_ctrl->func_tbl->camera_flash_high(
 				flash_ctrl, flash_data);
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 			g_flashlight_brightness = 100;
-#endif
 		}
 		break;
 	default:
@@ -1046,7 +1019,6 @@ static int32_t msm_flash_get_pmic_source_info(
 			if (rc < 0) {
 				pr_err("current: read failed\n");
 				of_node_put(flash_src_node);
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 				continue;
 			}
 
@@ -1057,7 +1029,6 @@ static int32_t msm_flash_get_pmic_source_info(
 			if (rc < 0) {
 				pr_err("duration: read failed\n");
 				of_node_put(flash_src_node);
-#endif
 				/* Non-fatal; this property is optional */
 			}
 
@@ -1430,9 +1401,7 @@ static int32_t msm_flash_platform_probe(struct platform_device *pdev)
 	if (flash_ctrl->flash_driver_type == FLASH_DRIVER_PMIC)
 		rc = msm_torch_create_classdev(pdev, flash_ctrl);
 
-#ifdef CONFIG_MACH_XIAOMI_HYDROGEN
 	msm_flashlight_create_classdev(pdev, flash_ctrl);
-#endif
 	CDBG("probe success\n");
 	return rc;
 }
