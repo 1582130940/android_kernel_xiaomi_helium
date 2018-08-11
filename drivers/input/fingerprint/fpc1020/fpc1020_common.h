@@ -11,8 +11,6 @@
 #ifndef LINUX_SPI_FPC1020_COMMON_H
 #define LINUX_SPI_FPC1020_COMMON_H
 
-#define DEBUG
-
 #include <linux/cdev.h>
 #include <linux/gpio.h>
 #include <linux/delay.h>

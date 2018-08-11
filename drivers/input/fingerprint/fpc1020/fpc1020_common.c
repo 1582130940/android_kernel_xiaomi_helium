@@ -8,8 +8,6 @@
  * as published by the Free Software Foundation.
  */
 
-#define DEBUG
-
 #include <linux/gpio.h>
 #include <linux/interrupt.h>
 #include <linux/clk.h>
