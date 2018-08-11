@@ -34,7 +34,6 @@
 	const bool target_little_endian = false;
 #endif
 
-
 /* -------------------------------------------------------------------- */
 /* fpc1020 data types							*/
 /* -------------------------------------------------------------------- */
@@ -47,7 +46,6 @@ struct chip_struct {
 	u8  adc_group_size;
 	u16 spi_max_khz;
 };
-
 
 /* -------------------------------------------------------------------- */
 /* fpc1020 driver constants						*/
@@ -69,7 +67,6 @@ struct chip_struct {
 #define FPC102X_ADC_GROUP_SIZE	8u
 
 #define FPC1020_EXT_HWID_CHECK_ID1020A_ROWS 5u
-
 
 static const char *chip_text[] = {
 	"N/A",		/* FPC1020_CHIP_NONE */
@@ -286,7 +283,6 @@ const fpc1020_diag_t fpc1020_diag_default = {
 	.spi_data     = 0,
 };
 
-
 /* -------------------------------------------------------------------- */
 /* function prototypes							*/
 /* -------------------------------------------------------------------- */
@@ -335,7 +331,6 @@ size_t fpc1020_calc_huge_buffer_minsize(fpc1020_data_t *fpc1020)
 	return (buff_req > buff_min) ? buff_req : buff_min;
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_manage_huge_buffer(fpc1020_data_t *fpc1020, size_t new_size)
 {
@@ -377,7 +372,6 @@ int fpc1020_manage_huge_buffer(fpc1020_data_t *fpc1020, size_t new_size)
 		}
 	}
 
-
 	if (error) {
 		dev_err(&fpc1020->spi->dev, "%s, failed %d\n",
 							__func__, error);
@@ -388,7 +382,6 @@ int fpc1020_manage_huge_buffer(fpc1020_data_t *fpc1020, size_t new_size)
 
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_setup_defaults(fpc1020_data_t *fpc1020)
@@ -477,7 +470,6 @@ out_err:
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_gpio_reset(fpc1020_data_t *fpc1020)
 {
@@ -510,7 +502,6 @@ int fpc1020_gpio_reset(fpc1020_data_t *fpc1020)
 	}
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_spi_reset(fpc1020_data_t *fpc1020)
@@ -550,7 +541,6 @@ int fpc1020_spi_reset(fpc1020_data_t *fpc1020)
 	}
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_reset(fpc1020_data_t *fpc1020)
@@ -597,7 +587,6 @@ int fpc1020_reset(fpc1020_data_t *fpc1020)
 out:
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_check_hw_id(fpc1020_data_t *fpc1020)
@@ -673,13 +662,11 @@ int fpc1020_check_hw_id(fpc1020_data_t *fpc1020)
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 const char *fpc1020_hw_id_text(fpc1020_data_t *fpc1020)
 {
 	return chip_text[fpc1020->chip.type];
 }
-
 
 /* -------------------------------------------------------------------- */
 static int fpc1020_check_hw_id_extended(fpc1020_data_t *fpc1020)
@@ -701,7 +688,6 @@ static int fpc1020_check_hw_id_extended(fpc1020_data_t *fpc1020)
 
 	return (error < 0) ? error : fpc1020->chip.revision;
 }
-
 
 /* -------------------------------------------------------------------- */
 static int fpc1020_hwid_1020a(fpc1020_data_t *fpc1020)
@@ -778,7 +764,6 @@ out_err:
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_id_1020a_setup(fpc1020_data_t *fpc1020)
 {
@@ -808,7 +793,6 @@ static int fpc1020_write_id_1020a_setup(fpc1020_data_t *fpc1020)
 out:
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_write_sensor_setup(fpc1020_data_t *fpc1020)
@@ -855,7 +839,6 @@ int fpc1020_write_sensor_setup(fpc1020_data_t *fpc1020)
 	return -EINVAL;
 }
 
-
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_sensor_1020a_setup(fpc1020_data_t *fpc1020)
 {
@@ -872,7 +855,6 @@ static int fpc1020_write_sensor_1020a_setup(fpc1020_data_t *fpc1020)
 
 	return -EINVAL;
 }
-
 
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_sensor_1020a_a1a2_setup(fpc1020_data_t *fpc1020)
@@ -971,7 +953,6 @@ static int fpc1020_write_sensor_1020a_a1a2_setup(fpc1020_data_t *fpc1020)
 out:
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_sensor_1020a_a3a4_setup(fpc1020_data_t *fpc1020)
@@ -1298,7 +1279,6 @@ out:
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_sensor_1155_setup(fpc1020_data_t *fpc1020)
 {
@@ -1397,7 +1377,6 @@ out:
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_sensor_1140_setup(fpc1020_data_t *fpc1020)
 {
@@ -1475,7 +1454,6 @@ static int fpc1020_write_sensor_1140_setup(fpc1020_data_t *fpc1020)
 out:
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_sensor_1145_setup(fpc1020_data_t *fpc1020)
@@ -1574,7 +1552,6 @@ static int fpc1020_write_sensor_1145_setup(fpc1020_data_t *fpc1020)
 out:
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_sensor_1022_setup(fpc1020_data_t *fpc1020)
@@ -1769,7 +1746,6 @@ static int fpc1020_check_irq_after_reset(fpc1020_data_t *fpc1020)
 	return (error < 0) ? error : irq_status;
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_wait_for_irq(fpc1020_data_t *fpc1020, int timeout)
 {
@@ -1818,7 +1794,6 @@ int fpc1020_wait_for_irq(fpc1020_data_t *fpc1020, int timeout)
 	return -ETIMEDOUT;
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_read_irq(fpc1020_data_t *fpc1020, bool clear_irq)
 {
@@ -1857,7 +1832,6 @@ int fpc1020_read_irq(fpc1020_data_t *fpc1020, bool clear_irq)
 	return (error < 0) ? error : irq_status;
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_read_status_reg(fpc1020_data_t *fpc1020)
 {
@@ -1874,7 +1848,6 @@ int fpc1020_read_status_reg(fpc1020_data_t *fpc1020)
 
 	return (error < 0) ? error : status;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_reg_access(fpc1020_data_t *fpc1020,
@@ -1971,7 +1944,6 @@ out:
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_cmd(fpc1020_data_t *fpc1020,
 			fpc1020_cmd_t cmd,
@@ -2014,11 +1986,8 @@ int fpc1020_cmd(fpc1020_data_t *fpc1020,
 	if (gpio_is_valid(fpc1020->cs_gpio))
 		gpio_set_value(fpc1020->cs_gpio, 1);
 
-
-
 	return error;
 }
-
 
 /* --------------------------------------------------------------------
    This function is supposed to be called when a finger is already assumed
@@ -2141,11 +2110,8 @@ int fpc1020_check_finger_present_raw(fpc1020_data_t *fpc1020)
 		fpc1020->diag.finger_present_status = temp_u16;
 	}
 
-
-
 	return temp_u16;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_check_finger_present_sum(fpc1020_data_t *fpc1020)
@@ -2170,7 +2136,6 @@ int fpc1020_check_finger_present_sum(fpc1020_data_t *fpc1020)
 	}
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_wake_up(fpc1020_data_t *fpc1020)
 {
@@ -2193,7 +2158,6 @@ int fpc1020_wake_up(fpc1020_data_t *fpc1020)
 		return -EIO;
 	}
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_sleep(fpc1020_data_t *fpc1020, bool deep_sleep)
@@ -2263,7 +2227,6 @@ int fpc1020_sleep(fpc1020_data_t *fpc1020, bool deep_sleep)
 		return (deep_sleep) ? -EIO : -EAGAIN;
 	}
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_fetch_image(fpc1020_data_t *fpc1020,
@@ -2336,13 +2299,11 @@ int fpc1020_fetch_image(fpc1020_data_t *fpc1020,
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 bool fpc1020_check_in_range_u64(u64 val, u64 min, u64 max)
 {
 	return (val >= min) && (val <= max);
 }
-
 
 /* -------------------------------------------------------------------- */
 u32 fpc1020_calc_pixel_sum(u8 *buffer, size_t count)
@@ -2356,7 +2317,6 @@ u32 fpc1020_calc_pixel_sum(u8 *buffer, size_t count)
 	}
 	return sum;
 }
-
 
 /* -------------------------------------------------------------------- */
 static int fpc1020_set_finger_drive(fpc1020_data_t *fpc1020, bool enable)
@@ -2384,7 +2344,6 @@ static int fpc1020_set_finger_drive(fpc1020_data_t *fpc1020, bool enable)
 out:
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_calc_finger_detect_threshold_min(fpc1020_data_t *fpc1020)
@@ -2466,7 +2425,6 @@ int fpc1020_calc_finger_detect_threshold_min(fpc1020_data_t *fpc1020)
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_set_finger_detect_threshold(fpc1020_data_t *fpc1020,
 					int measured_val)
@@ -2497,7 +2455,6 @@ int fpc1020_set_finger_detect_threshold(fpc1020_data_t *fpc1020,
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 static int fpc1020_flush_adc(fpc1020_data_t *fpc1020)
 {
@@ -2520,6 +2477,4 @@ static int fpc1020_flush_adc(fpc1020_data_t *fpc1020)
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
-

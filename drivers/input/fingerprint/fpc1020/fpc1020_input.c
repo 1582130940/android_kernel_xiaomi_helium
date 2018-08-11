@@ -21,14 +21,12 @@
 #include "fpc1020_input.h"
 #endif
 
-
 /* -------------------------------------------------------------------- */
 /* function prototypes							*/
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_lpm_setup(fpc1020_data_t *fpc1020);
 
 static int fpc1020_wait_finger_present_lpm(fpc1020_data_t *fpc1020);
-
 
 /* -------------------------------------------------------------------- */
 /* driver constants							*/
@@ -72,7 +70,6 @@ int fpc1020_input_init(fpc1020_data_t *fpc1020)
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 void fpc1020_input_destroy(fpc1020_data_t *fpc1020)
 {
@@ -81,7 +78,6 @@ void fpc1020_input_destroy(fpc1020_data_t *fpc1020)
 	if (fpc1020->input_dev != NULL)
 		input_free_device(fpc1020->input_dev);
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_input_enable(fpc1020_data_t *fpc1020, bool enabled)
@@ -92,7 +88,6 @@ int fpc1020_input_enable(fpc1020_data_t *fpc1020, bool enabled)
 
 	return 0;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_input_task(fpc1020_data_t *fpc1020)
@@ -118,7 +113,6 @@ int fpc1020_input_task(fpc1020_data_t *fpc1020)
 
 	return error;
 }
-
 
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_lpm_setup(fpc1020_data_t *fpc1020)
@@ -152,7 +146,6 @@ static int fpc1020_write_lpm_setup(fpc1020_data_t *fpc1020)
 out:
 	return error;
 }
-
 
 /* --------------------------------------------------------------------
    This function will utilize the sensor sleep mode while waiting for
@@ -255,6 +248,4 @@ static int fpc1020_wait_finger_present_lpm(fpc1020_data_t *fpc1020)
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
-

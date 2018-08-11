@@ -58,7 +58,6 @@ supply_err:
 	return error;
 }
 
-
 /* -------------------------------------------------------------------- */
 int fpc1020_regulator_release(fpc1020_data_t *fpc1020)
 {
@@ -71,7 +70,6 @@ int fpc1020_regulator_release(fpc1020_data_t *fpc1020)
 
 	return 0;
 }
-
 
 /* -------------------------------------------------------------------- */
 int fpc1020_regulator_set(fpc1020_data_t *fpc1020, bool enable)
@@ -127,6 +125,3 @@ out_err:
 	fpc1020_regulator_release(fpc1020);
 	return error;
 }
-
-
-
