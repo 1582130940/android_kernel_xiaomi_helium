@@ -772,7 +772,7 @@ static struct rcg_clk camss_gp1_clk_src = {
 };
 
 static struct clk_freq_tbl ftbl_jpeg0_clk_src[] = {
-	F( 133330000,          gpll0,    6,    0,     0),
+	F( 133333333,          gpll0,    6,    0,     0),
 	F( 200000000,          gpll0,    4,    0,     0),
 	F( 266666667,          gpll0,    3,    0,     0),
 	F( 300000000,      gpll4_out,    4,    0,     0),
@@ -789,7 +789,7 @@ static struct rcg_clk jpeg0_clk_src = {
 	.c = {
 		.dbg_name = "jpeg0_clk_src",
 		.ops = &clk_ops_rcg,
-		VDD_DIG_FMAX_MAP5(LOWER, 133330000, LOW, 200000000,
+		VDD_DIG_FMAX_MAP5(LOWER, 133333333, LOW, 200000000,
 		NOMINAL, 266670000, NOM_PLUS, 300000000,
 		HIGH, 320000000),
 		CLK_INIT(jpeg0_clk_src.c),
@@ -1504,7 +1504,7 @@ static struct rcg_clk usb_fs_system_clk_src = {
 static struct clk_freq_tbl ftbl_usb_hs_system_clk_src[] = {
 	F(  57140000,          gpll0,   14,    0,     0),
 	F( 100000000,          gpll0,    8,    0,     0),
-	F( 133330000,          gpll0,    6,    0,     0),
+	F( 133333333,          gpll0,    6,    0,     0),
 	F( 177780000,          gpll0,  4.5,    0,     0),
 	F_END
 };
