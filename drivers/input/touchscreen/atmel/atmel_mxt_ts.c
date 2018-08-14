@@ -309,7 +309,6 @@ struct mxt_selfcap_status {
 #define MXT_T25_MSG_STATUS_SIGLIMIT		0x17
 #define MXT_T25_MSG_STATUS_PTCPINFAULT	0x18
 
-
 struct mxt_info {
 	u8 family_id;
 	u8 variant_id;
@@ -608,7 +607,6 @@ static inline int board_hw_reset(struct mxt_data *data)
 	return 0;
 
 }
-
 
 static inline int mxt_obj_size(const struct mxt_object *obj)
 {
@@ -977,7 +975,6 @@ static int __mxt_read_reg_ext(struct i2c_client *client, u16 addr, u16 reg, u16 
 	return ret;
 }
 
-
 static int __mxt_write_reg_ext(struct i2c_client *client, u16 addr, u16 reg, u16 len,
 				const void *val, unsigned long flag)
 {
@@ -1032,7 +1029,6 @@ static int mxt_bootloader_write(struct mxt_data *data, const u8 * const val,
 
 	return __mxt_write_reg_ext(client, data->bootloader_addr, 0, count, val, I2C_ACCESS_NO_REG);
 }
-
 
 static int mxt_lookup_bootloader_address(struct mxt_data *data, bool retry)
 {
@@ -1540,7 +1536,6 @@ static ssize_t mxt_t25_selftest_show(struct device *dev,
 		printk("mxt_t25_selftest_show failed writing to T25\n");
 		return ret;
 	}
-
 
 	if (mxt_t25_command(data, 0xfe, 1) != 0) {
 		dev_dbg(dev, "mxt_t25_selftest_show write t25 command fail\n");
@@ -2242,7 +2237,6 @@ static void mxt_proc_T81_messages(struct mxt_data *data, u8 *msg)
 	struct device *dev = &data->client->dev;
 	int ret;
 
-
 	msg[0] -= data->T81_reportid_min;
 	/* do not report events if input device not yet registered */
 	if (test_bit(MXT_WK_ENABLE, &data->enable_wakeup)) {
@@ -2292,7 +2286,6 @@ static void mxt_proc_T99_messages(struct mxt_data *data, u8 *msg)
 {
 	struct device *dev = &data->client->dev;
 	int ret;
-
 
 	/* do not report events if input device not yet registered */
 	if (test_bit(MXT_WK_ENABLE, &data->enable_wakeup)) {
@@ -2677,7 +2670,6 @@ static int mxt_process_message_thread(void *dev_id)
 			data->suspended,
 			data->in_bootloader,
 			interval, interval);
-
 
 		if (kthread_should_stop()) {
 #if defined(CONFIG_MXT_PLUGIN_SUPPORT)
@@ -3166,18 +3158,16 @@ static int mxt_check_reg_init(struct mxt_data *data)
 
 	/* Malloc memory to store configuration */
 	cfg_start_ofs = MXT_OBJECT_START
-		+ data->info->object_num * sizeof(struct mxt_object)
-		+ MXT_INFO_CHECKSUM_SIZE;
+ 			data->info->object_num * sizeof(struct mxt_object)
+ 			MXT_INFO_CHECKSUM_SIZE;
 	config_mem_size = data->mem_size - cfg_start_ofs;
 #if defined(CONFIG_MXT_UPDATE_BY_OBJECT)
 	config_mem_size <<= 1;
 #endif
 	config_mem = kzalloc(config_mem_size, GFP_KERNEL);
-	if (!config_mem) {
-		dev_err(dev, "Failed to allocate memory\n");
+	if (!config_mem)
 		ret = -ENOMEM;
 		goto release;
-	}
 #if defined(CONFIG_MXT_UPDATE_BY_OBJECT)
 	object_mem = config_mem + (config_mem_size>>1);
 #endif
@@ -3902,7 +3892,6 @@ static int mxt_read_t9_resolution(struct mxt_data *data)
 		data->max_y_t = data->max_y;
 #endif
 
-
 	return 0;
 }
 
@@ -3931,7 +3920,6 @@ static int mxt_power_on(struct mxt_data *data, bool on)
 			return rc;
 		}
 	}
-
 
 	return rc;
 
@@ -4027,7 +4015,6 @@ static int mxt_power_init(struct mxt_data *data, bool on)
 			}
 		}
 	}
-
 
 	return 0;
 
@@ -4420,7 +4407,6 @@ static ssize_t mxt_devcfg_crc_show(struct device *dev,
 	return scnprintf(buf, PAGE_SIZE, "0x%06X,%s\n",
 			data->config_crc, data->cfg_name);
 }
-
 
 /* Firmware Version is returned as Major.Minor.Build */
 static ssize_t mxt_fw_version_show(struct device *dev,
@@ -4865,7 +4851,6 @@ static ssize_t mxt_update_fw_store(struct device *dev,
 	error = mxt_update_cfg_name_by_fw_name(dev, &data->cfg_name, data->fw_name, strlen(data->fw_name));
 	if (error)
 		return error;
-
 
 	mutex_lock(&data->access_mutex);
 	error = mxt_load_fw(dev);
@@ -5840,7 +5825,6 @@ static int  mxt_probe(struct i2c_client *client,
 			}
 	dev_info(&client->dev, "Mxt probeboard_gpio_init end\n");
 
-
 	if (!data->pdata) {
 		error = mxt_handle_pdata(data);
 		if (error)
@@ -5881,7 +5865,6 @@ static int  mxt_probe(struct i2c_client *client,
 		goto err_free_pdata;
 	}
 #endif
-
 
 	mxt_probe_regulators(data);
 

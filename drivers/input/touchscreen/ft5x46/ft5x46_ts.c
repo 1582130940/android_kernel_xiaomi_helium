@@ -40,7 +40,6 @@
 #define FT5X46_DEBUG_PERMISSION
 #define FT5X46_APK_DEBUG_CHANNEL
 
-
 #define FT5X0X_REG_DEVIDE_MODE	0x00
 #define FT5X0X_REG_ROW_ADDR		0x01
 #define FT5X0X_REG_TD_STATUS		0x02
@@ -102,7 +101,6 @@
 #define FT5X0X_EVENT_CONTACT		0x80
 #define FT5X0X_EVENT_MASK		0xc0
 
-
 /* ft5x0x firmware upgrade definition */
 #define FT5X0X_FIRMWARE_TAIL		(-8) /* base on the end of firmware */
 #define FT5X0X_FIRMWARE_VERION		(-2)
@@ -145,7 +143,6 @@
 #define FT5X46_UPGRADE_ID_1		0x54
 #define FT5X46_UPGRADE_ID_2		0x2C
 #define FT5X46_UPGRADE_READID_DELAY 		20
-
 
 #define FT5316_CHIP_ID		0x0A
 #define FT5X36_CHIP_ID		0x14
@@ -280,7 +277,6 @@ struct ft5x46_data {
 	struct notifier_block fb_notif;
 #endif
 };
-
 
 static void ft5x46_cover_mode(struct ft5x46_data *ft5x46, bool enable);
 
@@ -903,7 +899,6 @@ static int ft5x46_load_firmware(struct ft5x46_data *ft5x46,
 	return 0;
 }
 
-
 static int ft5x46_read_touchdata(struct ft5x46_data *ft5x46)
 {
 	struct ft5x46_ts_event *event = &ft5x46->event;
@@ -1025,7 +1020,6 @@ static void ft5x46_report_value(struct ft5x46_data *ft5x46)
 		}
 	}
 
-
 	for (i = 0; i < FT5X0X_MAX_FINGER; i++) {
 		if (BIT(i) & (ft5x46->touchs ^ touchs)) {
 			ft5x46->touchs &= ~BIT(i);
@@ -1086,7 +1080,6 @@ void ft5x46_keypad_switch(struct ft5x46_data *ft5x46, bool plugin)
 	mutex_unlock(&ft5x46->mutex);
 
 }
-
 
 static int ft5x46_read_gesture(struct ft5x46_data *ft5x46)
 {
@@ -2488,7 +2481,6 @@ static int ft5x46_input_event(struct input_dev *dev,
 
 	return 0;
 }
-
 
 #ifdef FT5X46_APK_DEBUG_CHANNEL
 static ssize_t ft5x46_apk_debug_read(struct file *file, char __user *buffer,
