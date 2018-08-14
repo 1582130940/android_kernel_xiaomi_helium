@@ -381,8 +381,7 @@ KBUILD_CFLAGS   := -Wundef -Wstrict-prototypes -Wno-trigraphs \
 
 # Optimization for MSM8956/MSM8976
 KBUILD_CFLAGS	+= $(call cc-option,-march=armv8-a+crypto+crc)
-KBUILD_CFLAGS	+= $(call cc-option,-mcpu=cortex-a72)
-KBUILD_CFLAGS	+= $(call cc-option,-mcpu=cortex-a53+crypto+crc)
+KBUILD_CFLAGS	+= $(call cc-option,-mcpu=cortex-a72+crypto+crc)
 KBUILD_CFLAGS	+= $(call cc-option,-mtune=cortex-a72.cortex-a53)
 
 KBUILD_AFLAGS_KERNEL :=
