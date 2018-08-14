@@ -450,7 +450,7 @@ static int vfe_probe(struct platform_device *pdev)
 		new_dev = of_platform_device_create(node, NULL, &pdev->dev);
 		if (!new_dev) {
 			pr_err("Failed to create device %s\n", node->name);
-			goto probe_fail2;
+			break;
 		}
 		new_dev->dev.platform_data = &vfe_common_data;
 
