@@ -436,29 +436,12 @@ static struct v4l2_file_operations msm_isp_v4l2_fops = {
 
 static int vfe_probe(struct platform_device *pdev)
 {
-	struct vfe_parent_device *vfe_parent_dev;
 	int rc = 0;
 	struct device_node *node;
 	struct platform_device *new_dev = NULL;
 	const struct device_node *dt_node = pdev->dev.of_node;
+	uint32_t num_hw_sd;
 
-	vfe_parent_dev = kzalloc(sizeof(struct vfe_parent_device),
-		GFP_KERNEL);
-	if (!vfe_parent_dev) {
-		pr_err("%s: no enough memory\n", __func__);
-		rc = -ENOMEM;
-		goto end;
-	}
-
-	vfe_parent_dev->common_sd = kzalloc(
-		sizeof(struct msm_vfe_common_subdev), GFP_KERNEL);
-	if (!vfe_parent_dev->common_sd) {
-		pr_err("%s: no enough memory\n", __func__);
-		rc = -ENOMEM;
-		goto probe_fail1;
-	}
-
-	vfe_parent_dev->common_sd->common_data = &vfe_common_data;
 	memset(&vfe_common_data, 0, sizeof(vfe_common_data));
 	spin_lock_init(&vfe_common_data.common_dev_data_lock);
 	spin_lock_init(&vfe_common_data.common_dev_axi_lock);
@@ -469,24 +452,11 @@ static int vfe_probe(struct platform_device *pdev)
 			pr_err("Failed to create device %s\n", node->name);
 			goto probe_fail2;
 		}
-		vfe_parent_dev->child_list[vfe_parent_dev->num_hw_sd++] =
-			new_dev;
-		new_dev->dev.platform_data =
-			(void *)vfe_parent_dev->common_sd->common_data;
+		new_dev->dev.platform_data = &vfe_common_data;
 
 		pr_debug("%s: device creation done\n", __func__);
 	}
 
-	vfe_parent_dev->num_sd = vfe_parent_dev->num_hw_sd;
-	vfe_parent_dev->pdev = pdev;
-
-	return rc;
-
-probe_fail2:
-	kfree(vfe_parent_dev->common_sd);
-probe_fail1:
-	kfree(vfe_parent_dev);
-end:
 	return rc;
 }
 
