@@ -49,7 +49,6 @@ struct mdss_hw mdss_dsi1_hw = {
 	.irq_handler = mdss_dsi_isr,
 };
 
-
 #define DSI_EVENT_Q_MAX	4
 
 #define DSI_BTA_EVENT_TIMEOUT (HZ / 10)
@@ -117,7 +116,6 @@ void mdss_dsi_ctrl_init(struct device *ctrl_dev,
 	mdss_dsi_buf_alloc(ctrl_dev, &ctrl->rx_buf, SZ_4K);
 	mdss_dsi_buf_alloc(ctrl_dev, &ctrl->status_buf, SZ_4K);
 	ctrl->cmdlist_commit = mdss_dsi_cmdlist_commit;
-
 
 	if (dsi_event.inited == 0) {
 		kthread_run(dsi_event_thread, (void *)&dsi_event,
@@ -380,7 +378,6 @@ void mdss_dsi_host_init(struct mdss_panel_data *pdata)
 	if (pinfo->data_lane0)
 		dsi_ctrl |= BIT(4);
 
-
 	data = 0;
 	if (pinfo->te_sel)
 		data |= BIT(31);
@@ -581,7 +578,6 @@ static void mdss_dsi_cfg_lane_ctrl(struct mdss_dsi_ctrl_pdata *ctrl,
 		data &= ~bits;
 	MIPI_OUTP(ctrl->ctrl_base + 0x0ac, data);
 }
-
 
 static inline bool mdss_dsi_poll_clk_lane(struct mdss_dsi_ctrl_pdata *ctrl)
 {
@@ -1097,7 +1093,6 @@ static int mdss_dsi_read_status(struct mdss_dsi_ctrl_pdata *ctrl)
 	return mdss_dsi_cmdlist_put(ctrl, &cmdreq);
 }
 
-
 /**
  * mdss_dsi_reg_status_check() - Check dsi panel status through reg read
  * @ctrl_pdata: pointer to the dsi controller structure
@@ -1562,7 +1557,6 @@ static int mdss_dsi_cmds2buf_tx(struct mdss_dsi_ctrl_pdata *ctrl,
 				return 0;
 			}
 
-
 			if (!wait || dchdr->wait > VSYNC_PERIOD)
 				usleep(dchdr->wait * 1000);
 
@@ -1697,7 +1691,6 @@ int mdss_dsi_cmds_rx(struct mdss_dsi_ctrl_pdata *ctrl,
 	char cmd;
 	struct mdss_dsi_ctrl_pdata *mctrl = NULL;
 
-
 	if (ctrl->panel_data.panel_info.panel_ack_disabled) {
 		pr_err("%s: ACK from Client not supported\n", __func__);
 		return rlen;
@@ -1747,7 +1740,6 @@ do_send:
 			pkt_size = data_byte;
 		rx_byte = data_byte + 6; /* 4 header + 2 crc */
 	}
-
 
 	tp = &ctrl->tx_buf;
 	rp = &ctrl->rx_buf;
@@ -1924,7 +1916,6 @@ static int mdss_dsi_cmd_dma_tx(struct mdss_dsi_ctrl_pdata *ctrl,
 
 	len = ALIGN(tp->len, 4);
 	ctrl->dma_size = ALIGN(tp->len, SZ_4K);
-
 
 	ctrl->mdss_util->iommu_lock();
 	if (ctrl->mdss_util->iommu_attached()) {
