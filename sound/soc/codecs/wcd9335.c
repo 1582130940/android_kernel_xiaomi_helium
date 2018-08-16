@@ -478,7 +478,6 @@ static const u32 vport_slim_check_table[NUM_CODEC_DAIS] = {
 	BIT(AIF1_CAP) | BIT(AIF2_CAP) | BIT(AIF3_CAP),	     /* AIF4_MAD_TX */
 };
 
-
 /* Codec supports 2 IIR filters */
 enum {
 	IIR0 = 0,
@@ -2256,7 +2255,6 @@ static int slim_tx_mixer_put(struct snd_kcontrol *kcontrol,
 	u32 enable = ucontrol->value.integer.value[0];
 	u32 vtable = 0;
 
-
 	dev_dbg(codec->dev, "%s: wname %s cname %s value %u shift %d item %ld\n",
 		  __func__,
 		widget->name, ucontrol->id.name, tasha_p->tx_port_value,
@@ -2631,8 +2629,6 @@ static const struct snd_kcontrol_new rx_int8_vbat_mix_switch[] = {
 static const struct snd_kcontrol_new cpe_in_mix_switch[] = {
 	SOC_DAPM_SINGLE("MAD_BYPASS", SND_SOC_NOPM, 0, 1, 0)
 };
-
-
 
 static int tasha_put_iir_enable_audio_mixer(
 					struct snd_kcontrol *kcontrol,
@@ -4752,7 +4748,6 @@ static int tasha_codec_enable_mix_path(struct snd_soc_dapm_widget *w,
 			__func__, w->name);
 		return 0;
 	};
-
 
 	switch (event) {
 	case SND_SOC_DAPM_POST_PMU:
@@ -8308,7 +8303,6 @@ static int tasha_codec_configure_cpe_input(struct snd_soc_dapm_widget *w,
 	return 0;
 }
 
-
 static int tasha_codec_aif4_mixer_switch_get(struct snd_kcontrol *kcontrol,
 		struct snd_ctl_elem_value *ucontrol)
 {
@@ -10632,7 +10626,6 @@ static int tasha_set_prim_interpolator_rate(struct snd_soc_dai *dai,
 	return 0;
 }
 
-
 static int tasha_set_interpolator_rate(struct snd_soc_dai *dai,
 				       u32 sample_rate)
 {
@@ -11851,7 +11844,6 @@ static int tasha_codec_cpe_fll_update_divider(
 	if (computed_cpe_fll < cpe_fll_rate)
 		l_val++;
 
-
 	/* update L value LSB and MSB */
 	snd_soc_write(codec, WCD9335_CPE_FLL_L_VAL_CTL_0,
 		      (l_val & 0xFF));
@@ -11923,7 +11915,6 @@ done:
 			    0x08, 0x00);
 	return ret;
 }
-
 
 static int tasha_codec_cpe_fll_enable(struct snd_soc_codec *codec,
 				   bool enable)
@@ -12130,7 +12121,6 @@ static int tasha_cpe_err_irq_control(struct snd_soc_codec *codec,
 
 	if (status)
 		irq_bits = (*status) & irq_bits;
-
 
 	switch (cntl_type) {
 	case CPE_ERR_IRQ_MASK:
@@ -13158,12 +13148,12 @@ static int tasha_probe(struct platform_device *pdev)
 #ifdef CONFIG_SOUND_CONTROL
 	sound_control_kobj = kobject_create_and_add("sound_control", kernel_kobj);
 	if (sound_control_kobj == NULL) {
-		pr_warn("%s kobject create failed!\n", __func__);
+		pr_debug("%s kobject create failed!\n", __func__);
         }
 
 	ret = sysfs_create_group(sound_control_kobj, &sound_control_attr_group);
         if (ret) {
-		pr_warn("%s sysfs file create failed!\n", __func__);
+		pr_debug("%s sysfs file create failed!\n", __func__);
 	}
 #endif
 
