@@ -11,8 +11,6 @@ msm8976(){
 rm AnyKernel2/Image.gz-dtb
 date="`date +%Y%m%d%H%M%S`"
 zipname="Mi_MSM8976_Xtreme™-Project_Kernel-$date.zip"
-export KBUILD_BUILD_USER="1582130940"
-export KBUILD_BUILD_HOST="Hitler-Ubuntu"
 make O=out mrproper&&make O=out msm8976_user_defconfig&&make O=out -j32
 cp -f out/arch/arm64/boot/Image.gz-dtb AnyKernel2
 cp -f out/drivers/staging/prima/wlan.ko AnyKernel2/modules/system/lib/modules/pronto/pronto_wlan.ko
