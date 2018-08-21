@@ -49,10 +49,10 @@
 #define MAX_CPU_NAME 10
 
 #define BCL_FETCH_DT_U32(_dev, _key, _search_str, _ret, _out, _exit) do { \
-		_key = _search_str; \
-		_ret = of_property_read_u32(_dev, _key, &_out); \
-		if (_ret) \
-			goto _exit; \
+	_key = _search_str;	\
+	_ret = of_property_read_u32(_dev, _key, &_out);	\
+	if (_ret) \
+		goto _exit; \
 	} while (0)
 
 /*
@@ -131,7 +131,7 @@ struct bcl_context {
 	enum bcl_monitor_type bcl_monitor_type;
 	/* BCL Iavail Threshold Activate or Not */
 	enum bcl_iavail_threshold_mode
-				bcl_threshold_mode[BCL_THRESHOLD_TYPE_MAX];
+		bcl_threshold_mode[BCL_THRESHOLD_TYPE_MAX];
 	/* BCL Iavail Threshold value in milli Amp */
 	int bcl_threshold_value_ma[BCL_THRESHOLD_TYPE_MAX];
 	/* BCL Type */
@@ -196,8 +196,8 @@ enum bcl_threshold_state {
 
 static struct bcl_context *gbcl;
 static enum bcl_threshold_state bcl_vph_state = BCL_THRESHOLD_DISABLED,
-		bcl_ibat_state = BCL_THRESHOLD_DISABLED,
-		bcl_soc_state = BCL_THRESHOLD_DISABLED;
+	bcl_ibat_state = BCL_THRESHOLD_DISABLED,
+	bcl_soc_state = BCL_THRESHOLD_DISABLED;
 static DEFINE_MUTEX(bcl_notify_mutex);
 static uint32_t bcl_hotplug_request, bcl_hotplug_mask, bcl_soc_hotplug_mask;
 static uint32_t bcl_frequency_mask;
@@ -295,14 +295,14 @@ static void power_supply_callback(struct power_supply *psy)
 		bms_psy = power_supply_get_by_name("bms");
 	if (bms_psy) {
 		battery_percentage = bms_psy->get_property(bms_psy,
-				POWER_SUPPLY_PROP_CAPACITY, &ret);
+			POWER_SUPPLY_PROP_CAPACITY, &ret);
 		battery_percentage = ret.intval;
 		battery_soc_val = battery_percentage;
 		pr_debug("Battery SOC reported:%d", battery_soc_val);
 //		trace_bcl_sw_mitigation("SoC reported", battery_soc_val);
 		prev_soc_state = bcl_soc_state;
 		bcl_soc_state = (battery_soc_val <= soc_low_threshold) ?
-					BCL_LOW_THRESHOLD : BCL_HIGH_THRESHOLD;
+			BCL_LOW_THRESHOLD : BCL_HIGH_THRESHOLD;
 		if (bcl_soc_state == prev_soc_state)
 			return;
 //		trace_bcl_sw_mitigation_event(
@@ -337,7 +337,6 @@ static int bcl_get_battery_voltage(int *vbatt_mv)
 	*vbatt_mv = ret.intval / 1000;
 	return 0;
 }
-
 
 static int bcl_get_resistance(int *rbatt_mohm)
 {
@@ -396,12 +395,12 @@ static void bcl_calculate_iavail_trigger(void)
 			rbatt_mohm);
 
 	if ((gbcl->bcl_threshold_mode[BCL_HIGH_THRESHOLD_TYPE] ==
-				BCL_IAVAIL_THRESHOLD_ENABLED)
+		BCL_IAVAIL_THRESHOLD_ENABLED)
 		&& (iavail_ma >=
 		gbcl->bcl_threshold_value_ma[BCL_HIGH_THRESHOLD_TYPE]))
 		threshold_cross = true;
 	else if ((gbcl->bcl_threshold_mode[BCL_LOW_THRESHOLD_TYPE]
-				== BCL_IAVAIL_THRESHOLD_ENABLED)
+		== BCL_IAVAIL_THRESHOLD_ENABLED)
 		&& (iavail_ma <=
 		gbcl->bcl_threshold_value_ma[BCL_LOW_THRESHOLD_TYPE]))
 		threshold_cross = true;
@@ -416,7 +415,7 @@ static void bcl_calculate_iavail_trigger(void)
 static void bcl_iavail_work(struct work_struct *work)
 {
 	struct bcl_context *bcl = container_of(work,
-			struct bcl_context, bcl_iavail_work.work);
+		struct bcl_context, bcl_iavail_work.work);
 
 	if (gbcl->bcl_mode == BCL_DEVICE_ENABLED) {
 		bcl_calculate_iavail_trigger();
@@ -460,7 +459,7 @@ int bcl_voltage_notify(bool is_high_thresh)
 //		? "vbat High trip notify"
 //		: "vbat Low trip notify");
 	bcl_vph_notify((is_high_thresh) ? BCL_HIGH_THRESHOLD
-			: BCL_LOW_THRESHOLD);
+		: BCL_LOW_THRESHOLD);
 	return ret;
 }
 EXPORT_SYMBOL(bcl_voltage_notify);
@@ -482,7 +481,7 @@ int bcl_current_notify(bool is_high_thresh)
 //		? "ibat High trip notify"
 //		: "ibat Low trip notify");
 	bcl_ibat_notify((is_high_thresh) ? BCL_HIGH_THRESHOLD
-			: BCL_LOW_THRESHOLD);
+		: BCL_LOW_THRESHOLD);
 	return ret;
 }
 EXPORT_SYMBOL(bcl_current_notify);
@@ -490,9 +489,9 @@ EXPORT_SYMBOL(bcl_current_notify);
 static void bcl_ibat_notification(enum qpnp_tm_state state, void *ctx);
 static void bcl_vph_notification(enum qpnp_tm_state state, void *ctx);
 static int bcl_config_ibat_adc(struct bcl_context *bcl,
-			enum bcl_iavail_threshold_type thresh_type);
+	enum bcl_iavail_threshold_type thresh_type);
 static int bcl_config_vph_adc(struct bcl_context *bcl,
-			enum bcl_iavail_threshold_type thresh_type)
+	enum bcl_iavail_threshold_type thresh_type)
 {
 	int ret = 0;
 
@@ -514,13 +513,13 @@ static int bcl_config_vph_adc(struct bcl_context *bcl,
 	bcl->btm_vph_adc_param.low_thr = bcl->btm_vph_low_thresh;
 	bcl->btm_vph_adc_param.high_thr = bcl->btm_vph_high_thresh;
 	bcl->btm_vph_adc_param.timer_interval =
-			adc_timer_val_usec[ADC_MEAS1_INTERVAL_1S];
+		adc_timer_val_usec[ADC_MEAS1_INTERVAL_1S];
 	bcl->btm_vph_adc_param.btm_ctx = bcl;
 	bcl->btm_vph_adc_param.threshold_notification = bcl_vph_notification;
 	bcl->btm_vph_adc_param.channel = bcl->btm_vph_chan;
 
 	ret = qpnp_adc_tm_channel_measure(bcl->btm_adc_tm_dev,
-			&bcl->btm_vph_adc_param);
+		&bcl->btm_vph_adc_param);
 	if (ret < 0)
 		pr_err("Error configuring BTM for Vph. ret:%d\n", ret);
 	else
@@ -539,17 +538,17 @@ static int bcl_config_vph_adc(struct bcl_context *bcl,
 static int current_to_voltage(struct bcl_context *bcl, int ua)
 {
 	return DIV_ROUND_CLOSEST(ua * bcl->btm_uv_to_ua_denominator,
-			bcl->btm_uv_to_ua_numerator);
+		bcl->btm_uv_to_ua_numerator);
 }
 
 static int voltage_to_current(struct bcl_context *bcl, int uv)
 {
 	return DIV_ROUND_CLOSEST(uv * bcl->btm_uv_to_ua_numerator,
-			bcl->btm_uv_to_ua_denominator);
+		bcl->btm_uv_to_ua_denominator);
 }
 
 static int adc_time_to_uSec(struct bcl_context *bcl,
-		enum qpnp_adc_meas_timer_1 t)
+	enum qpnp_adc_meas_timer_1 t)
 {
 	return adc_timer_val_usec[t];
 }
@@ -574,7 +573,7 @@ static int vph_disable(void)
 	int ret = 0;
 
 	ret = qpnp_adc_tm_disable_chan_meas(gbcl->btm_adc_tm_dev,
-			&gbcl->btm_vph_adc_param);
+		&gbcl->btm_vph_adc_param);
 	if (ret) {
 		pr_err("Error disabling ADC. err:%d\n", ret);
 		gbcl->bcl_mode = BCL_DEVICE_ENABLED;
@@ -593,7 +592,7 @@ static int ibat_disable(void)
 	int ret = 0;
 
 	ret = qpnp_adc_tm_disable_chan_meas(gbcl->btm_adc_tm_dev,
-			&gbcl->btm_ibat_adc_param);
+		&gbcl->btm_ibat_adc_param);
 	if (ret) {
 		pr_err("Error disabling ADC. err:%d\n", ret);
 		gbcl->bcl_mode = BCL_DEVICE_ENABLED;
@@ -618,7 +617,7 @@ static void bcl_periph_ibat_notify(enum bcl_trip_type type, int trip_temp,
 }
 
 static void bcl_periph_vbat_notify(enum bcl_trip_type type, int trip_temp,
-		void *data)
+	void *data)
 {
 	if (type == BCL_HIGH_TRIP)
 		bcl_vph_notify(BCL_HIGH_THRESHOLD);
@@ -870,7 +869,7 @@ mode_show(struct device *dev, struct device_attribute *attr, char *buf)
 
 static ssize_t
 mode_store(struct device *dev, struct device_attribute *attr,
-		const char *buf, size_t count)
+	const char *buf, size_t count)
 {
 	if (!gbcl)
 		return -EPERM;
@@ -890,8 +889,8 @@ mode_store(struct device *dev, struct device_attribute *attr,
 
 static ssize_t
 poll_interval_store(struct device *dev,
-			struct device_attribute *attr,
-			const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int value = 0;
 
@@ -910,8 +909,8 @@ poll_interval_store(struct device *dev,
 }
 
 static ssize_t vbat_min_store(struct device *dev,
-			struct device_attribute *attr,
-			const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int value = 0;
 	int ret = 0;
@@ -931,7 +930,7 @@ static ssize_t vbat_min_store(struct device *dev,
 }
 
 static ssize_t iavail_low_threshold_mode_show(struct device *dev,
-			struct device_attribute *attr, char *buf)
+	struct device_attribute *attr, char *buf)
 {
 	if (!gbcl)
 		return -EPERM;
@@ -942,8 +941,8 @@ static ssize_t iavail_low_threshold_mode_show(struct device *dev,
 }
 
 static ssize_t iavail_low_threshold_mode_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	if (!gbcl)
 		return -EPERM;
@@ -960,7 +959,7 @@ static ssize_t iavail_low_threshold_mode_store(struct device *dev,
 	return count;
 }
 static ssize_t iavail_high_threshold_mode_show(struct device *dev,
-			struct device_attribute *attr, char *buf)
+	struct device_attribute *attr, char *buf)
 {
 	if (!gbcl)
 		return -EPERM;
@@ -971,8 +970,8 @@ static ssize_t iavail_high_threshold_mode_show(struct device *dev,
 }
 
 static ssize_t iavail_high_threshold_mode_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	if (!gbcl)
 		return -EPERM;
@@ -990,7 +989,7 @@ static ssize_t iavail_high_threshold_mode_store(struct device *dev,
 }
 
 static ssize_t iavail_low_threshold_value_show(struct device *dev,
-			struct device_attribute *attr, char *buf)
+	struct device_attribute *attr, char *buf)
 {
 	if (!gbcl)
 		return -EPERM;
@@ -1001,8 +1000,8 @@ static ssize_t iavail_low_threshold_value_show(struct device *dev,
 
 
 static ssize_t iavail_low_threshold_value_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int val = 0;
 	int ret = 0;
@@ -1022,7 +1021,7 @@ static ssize_t iavail_low_threshold_value_store(struct device *dev,
 	return count;
 }
 static ssize_t iavail_high_threshold_value_show(struct device *dev,
-			struct device_attribute *attr, char *buf)
+	struct device_attribute *attr, char *buf)
 {
 	if (!gbcl)
 		return -EPERM;
@@ -1032,8 +1031,8 @@ static ssize_t iavail_high_threshold_value_show(struct device *dev,
 }
 
 static ssize_t iavail_high_threshold_value_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int val = 0;
 	int ret = 0;
@@ -1074,8 +1073,8 @@ static int convert_to_int(const char *buf, int *val)
 }
 
 static ssize_t high_ua_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int val = 0;
 	int ret = 0;
@@ -1093,8 +1092,8 @@ static ssize_t high_ua_store(struct device *dev,
 }
 
 static ssize_t low_ua_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int val = 0;
 	int ret = 0;
@@ -1112,8 +1111,8 @@ static ssize_t low_ua_store(struct device *dev,
 }
 
 static ssize_t freq_max_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int val = 0;
 	int ret = 0;
@@ -1123,15 +1122,15 @@ static ssize_t freq_max_store(struct device *dev,
 	if (ret)
 		return ret;
 	freq_lim = (gbcl->bcl_monitor_type == BCL_IBAT_MONITOR_TYPE) ?
-			&gbcl->btm_freq_max : &gbcl->bcl_p_freq_max;
+		&gbcl->btm_freq_max : &gbcl->bcl_p_freq_max;
 	*freq_lim = max_t(uint32_t, val, gbcl->thermal_freq_limit);
 
 	return count;
 }
 
 static ssize_t vph_low_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int val = 0;
 	int ret = 0;
@@ -1142,16 +1141,16 @@ static ssize_t vph_low_store(struct device *dev,
 		return ret;
 
 	thresh = (gbcl->bcl_monitor_type == BCL_IBAT_MONITOR_TYPE)
-			? (int *)&gbcl->btm_vph_low_thresh
-			: &gbcl->vbat_low_thresh.trip_value;
+		? (int *)&gbcl->btm_vph_low_thresh
+		: &gbcl->vbat_low_thresh.trip_value;
 	*thresh = val;
 
 	return count;
 }
 
 static ssize_t vph_high_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int val = 0;
 	int ret = 0;
@@ -1162,16 +1161,16 @@ static ssize_t vph_high_store(struct device *dev,
 		return ret;
 
 	thresh = (gbcl->bcl_monitor_type == BCL_IBAT_MONITOR_TYPE)
-			? (int *)&gbcl->btm_vph_high_thresh
-			: &gbcl->vbat_high_thresh.trip_value;
+		? (int *)&gbcl->btm_vph_high_thresh
+		: &gbcl->vbat_high_thresh.trip_value;
 	*thresh = val;
 
 	return count;
 }
 
 static ssize_t hotplug_mask_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int ret = 0, val = 0;
 
@@ -1191,8 +1190,8 @@ static ssize_t hotplug_mask_store(struct device *dev,
 }
 
 static ssize_t hotplug_soc_mask_store(struct device *dev,
-					struct device_attribute *attr,
-					const char *buf, size_t count)
+	struct device_attribute *attr,
+	const char *buf, size_t count)
 {
 	int ret = 0, val = 0;
 
@@ -1212,7 +1211,7 @@ static ssize_t hotplug_soc_mask_store(struct device *dev,
 }
 
 static ssize_t soc_low_thresh_store(struct device *dev,
-		struct device_attribute *attr, const char *buf, size_t count)
+	struct device_attribute *attr, const char *buf, size_t count)
 {
 	int val = 0;
 	int ret = 0;
@@ -1327,7 +1326,7 @@ static void remove_bcl_sysfs(struct bcl_context *bcl)
 }
 
 static int bcl_config_ibat_adc(struct bcl_context *bcl,
-		enum bcl_iavail_threshold_type thresh_type)
+	enum bcl_iavail_threshold_type thresh_type)
 {
 	int ret = 0;
 
@@ -1355,7 +1354,7 @@ static int bcl_config_ibat_adc(struct bcl_context *bcl,
 	bcl->btm_ibat_adc_param.channel = bcl->btm_ibat_chan;
 
 	ret = qpnp_adc_tm_channel_measure(bcl->btm_adc_tm_dev,
-			&bcl->btm_ibat_adc_param);
+		&bcl->btm_ibat_adc_param);
 	if (ret < 0)
 		pr_err("Error configuring BTM. ret:%d\n", ret);
 	else
@@ -1449,7 +1448,7 @@ static int bcl_resume(struct device *dev)
 }
 
 static void get_vdd_rstr_freq(struct bcl_context *bcl,
-				struct device_node *ibat_node)
+	struct device_node *ibat_node)
 {
 	int ret = 0;
 	struct device_node *phandle = NULL;
@@ -1464,7 +1463,7 @@ static void get_vdd_rstr_freq(struct bcl_context *bcl,
 	}
 	key = "qcom,levels";
 	ret = of_property_read_u32_index(phandle, key, 0,
-					&bcl->thermal_freq_limit);
+		&bcl->thermal_freq_limit);
 	if (ret) {
 		pr_err("Error reading property %s. ret:%d\n", key, ret);
 		goto vdd_rstr_exit;
@@ -1515,12 +1514,12 @@ static int probe_bcl_periph_prop(struct bcl_context *bcl)
 	bcl->btm_mode = BCL_MONITOR_DISABLED;
 	bcl->bcl_monitor_type = BCL_IBAT_PERIPH_MONITOR_TYPE;
 	snprintf(bcl->bcl_type, BCL_NAME_LENGTH, "%s",
-			bcl_type[BCL_IBAT_PERIPH_MONITOR_TYPE]);
+		bcl_type[BCL_IBAT_PERIPH_MONITOR_TYPE]);
 
 ibat_probe_exit:
 	if (ret && ret != -EPROBE_DEFER)
 		dev_info(bcl->dev, "%s:%s Error reading key:%s. ret = %d\n",
-				KBUILD_MODNAME, __func__, key, ret);
+			KBUILD_MODNAME, __func__, key, ret);
 
 	return ret;
 }
@@ -1541,13 +1540,13 @@ static int probe_btm_properties(struct bcl_context *bcl)
 
 	key = "qcom,uv-to-ua-numerator";
 	ret = of_property_read_u32(ibat_node, key,
-			&bcl->btm_uv_to_ua_numerator);
+		&bcl->btm_uv_to_ua_numerator);
 	if (ret < 0)
 		goto btm_probe_exit;
 
 	key = "qcom,uv-to-ua-denominator";
 	ret = of_property_read_u32(ibat_node, key,
-			&bcl->btm_uv_to_ua_denominator);
+		&bcl->btm_uv_to_ua_denominator);
 	if (ret < 0)
 		goto btm_probe_exit;
 
@@ -1613,38 +1612,38 @@ static int probe_btm_properties(struct bcl_context *bcl)
 	bcl->btm_mode = BCL_MONITOR_DISABLED;
 	bcl->bcl_monitor_type = BCL_IBAT_MONITOR_TYPE;
 	snprintf(bcl->bcl_type, BCL_NAME_LENGTH, "%s",
-			bcl_type[BCL_IBAT_MONITOR_TYPE]);
+		bcl_type[BCL_IBAT_MONITOR_TYPE]);
 
 btm_probe_exit:
 	if (ret && ret != -EPROBE_DEFER)
 		dev_info(bcl->dev, "%s:%s Error reading key:%s. ret = %d\n",
-				KBUILD_MODNAME, __func__, key, ret);
+			KBUILD_MODNAME, __func__, key, ret);
 
 	return ret;
 }
 
 static int bcl_battery_get_property(struct power_supply *psy,
-				enum power_supply_property prop,
-				union power_supply_propval *val)
+	enum power_supply_property prop,
+	union power_supply_propval *val)
 {
 	return 0;
 }
 static int bcl_battery_set_property(struct power_supply *psy,
-				enum power_supply_property prop,
-				const union power_supply_propval *val)
+	enum power_supply_property prop,
+	const union power_supply_propval *val)
 {
 	return 0;
 }
 
 static uint32_t get_mask_from_core_handle(struct platform_device *pdev,
-						const char *key)
+	const char *key)
 {
 	struct device_node *core_phandle = NULL;
 	int i = 0, cpu = 0;
 	uint32_t mask = 0;
 
 	core_phandle = of_parse_phandle(pdev->dev.of_node,
-			key, i++);
+		key, i++);
 	while (core_phandle) {
 		for_each_possible_cpu(cpu) {
 			if (of_get_cpu_node(cpu, NULL) == core_phandle) {
@@ -1683,14 +1682,14 @@ static int bcl_probe(struct platform_device *pdev)
 	bcl->dev = &pdev->dev;
 	bcl->bcl_monitor_type = BCL_IAVAIL_MONITOR_TYPE;
 	bcl->bcl_threshold_mode[BCL_LOW_THRESHOLD_TYPE] =
-					BCL_IAVAIL_THRESHOLD_DISABLED;
+		BCL_IAVAIL_THRESHOLD_DISABLED;
 	bcl->bcl_threshold_mode[BCL_HIGH_THRESHOLD_TYPE] =
-					BCL_IAVAIL_THRESHOLD_DISABLED;
+		BCL_IAVAIL_THRESHOLD_DISABLED;
 	bcl->bcl_threshold_value_ma[BCL_LOW_THRESHOLD_TYPE] = 0;
 	bcl->bcl_threshold_value_ma[BCL_HIGH_THRESHOLD_TYPE] = 0;
 	bcl->bcl_vbat_min = BATTERY_VOLTAGE_MIN;
 	snprintf(bcl->bcl_type, BCL_NAME_LENGTH, "%s",
-			bcl_type[BCL_IAVAIL_MONITOR_TYPE]);
+		bcl_type[BCL_IAVAIL_MONITOR_TYPE]);
 	bcl->bcl_poll_interval_msec = BCL_POLL_INTERVAL;
 
 	if (of_property_read_bool(pdev->dev.of_node, "qcom,bcl-no-bms"))
@@ -1699,11 +1698,11 @@ static int bcl_probe(struct platform_device *pdev)
 		bcl->bcl_no_bms = false;
 
 	bcl_frequency_mask = get_mask_from_core_handle(pdev,
-					 "qcom,bcl-freq-control-list");
+		"qcom,bcl-freq-control-list");
 	bcl_hotplug_mask = get_mask_from_core_handle(pdev,
-					 "qcom,bcl-hotplug-list");
+		"qcom,bcl-hotplug-list");
 	bcl_soc_hotplug_mask = get_mask_from_core_handle(pdev,
-					 "qcom,bcl-soc-hotplug-list");
+		"qcom,bcl-soc-hotplug-list");
 
 	if (!bcl_hotplug_mask && !bcl_soc_hotplug_mask)
 		bcl_hotplug_enabled = false;
@@ -1725,11 +1724,11 @@ static int bcl_probe(struct platform_device *pdev)
 	}
 	bcl_psy.name = bcl_psy_name;
 	bcl_psy.type = POWER_SUPPLY_TYPE_BMS;
-	bcl_psy.get_property     = bcl_battery_get_property;
-	bcl_psy.set_property     = bcl_battery_set_property;
+	bcl_psy.get_property = bcl_battery_get_property;
+	bcl_psy.set_property = bcl_battery_set_property;
 	bcl_psy.num_properties = 0;
 	bcl_psy.external_power_changed = power_supply_callback;
-	bcl->bcl_hotplug_wq = alloc_workqueue("bcl_hotplug_wq",  WQ_HIGHPRI, 0);
+	bcl->bcl_hotplug_wq = alloc_workqueue("bcl_hotplug_wq", WQ_HIGHPRI, 0);
 	if (!bcl->bcl_hotplug_wq) {
 		pr_err("Workqueue alloc failed\n");
 		return -ENOMEM;
@@ -1738,7 +1737,7 @@ static int bcl_probe(struct platform_device *pdev)
 	/* Initialize mitigation KTM interface */
 	if (num_possible_cpus() > 1) {
 		bcl->hotplug_handle = devmgr_register_mitigation_client(
-					&pdev->dev, HOTPLUG_DEVICE, NULL);
+			&pdev->dev, HOTPLUG_DEVICE, NULL);
 		if (IS_ERR(bcl->hotplug_handle)) {
 			ret = PTR_ERR(bcl->hotplug_handle);
 			pr_err("Error registering for hotplug. ret:%d\n", ret);
@@ -1748,7 +1747,7 @@ static int bcl_probe(struct platform_device *pdev)
 	for_each_possible_cpu(cpu) {
 		snprintf(cpu_str, MAX_CPU_NAME, "cpu%d", cpu);
 		bcl->cpufreq_handle[cpu] = devmgr_register_mitigation_client(
-					&pdev->dev, cpu_str, NULL);
+			&pdev->dev, cpu_str, NULL);
 		if (IS_ERR(bcl->cpufreq_handle[cpu])) {
 			ret = PTR_ERR(bcl->cpufreq_handle[cpu]);
 			pr_err("Error registering for cpufreq. ret:%d\n", ret);
@@ -1792,18 +1791,18 @@ static struct of_device_id bcl_match_table[] = {
 };
 
 static const struct dev_pm_ops bcl_pm_ops = {
-	.resume         = bcl_resume,
-	.suspend        = bcl_suspend,
+	.resume = bcl_resume,
+	.suspend = bcl_suspend,
 };
 
 static struct platform_driver bcl_driver = {
 	.probe  = bcl_probe,
 	.remove = bcl_remove,
 	.driver = {
-		.name           = BCL_DEV_NAME,
-		.owner          = THIS_MODULE,
-		.of_match_table = bcl_match_table,
-		.pm             = &bcl_pm_ops,
+		.name = BCL_DEV_NAME,
+		.owner = THIS_MODULE,
+		.of_match_table	= bcl_match_table,
+		.pm	= &bcl_pm_ops,
 	},
 };
 

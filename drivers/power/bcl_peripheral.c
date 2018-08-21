@@ -31,10 +31,10 @@
 #define _BCL_HW_TRACE
 #include <trace/trace_thermal.h>
 
-#define BCL_DRIVER_NAME         "bcl_peripheral"
-#define BCL_VBAT_INT_NAME       "bcl-low-vbat-int"
-#define BCL_IBAT_INT_NAME       "bcl-high-ibat-int"
-#define BCL_PARAM_MAX_ATTR      3
+#define BCL_DRIVER_NAME		"bcl_peripheral"
+#define BCL_VBAT_INT_NAME	"bcl-low-vbat-int"
+#define BCL_IBAT_INT_NAME	"bcl-high-ibat-int"
+#define BCL_PARAM_MAX_ATTR	3
 
 #define BCL_INT_EN              0x15
 #define BCL_MONITOR_EN          0x46
@@ -57,32 +57,32 @@
 #define BCL_VBAT_TRIP           0x68
 #define BCL_IBAT_TRIP           0x69
 
-#define BCL_CONSTANT_NUM        32
-#define BCL_READ_RETRY_LIMIT    3
-#define VAL_CP_REG_BUF_LEN      3
-#define VAL_REG_BUF_OFFSET      0
-#define VAL_CP_REG_BUF_OFFSET   2
+#define BCL_CONSTANT_NUM		32
+#define BCL_READ_RETRY_LIMIT	3
+#define VAL_CP_REG_BUF_LEN		3
+#define VAL_REG_BUF_OFFSET		0
+#define VAL_CP_REG_BUF_OFFSET	2
 #define PON_SPARE_FULL_CURRENT		0x0
 #define PON_SPARE_DERATED_CURRENT	0x1
 
 #define READ_CONV_FACTOR(_node, _key, _val, _ret, _dest) do { \
-		_ret = of_property_read_u32(_node, _key, &_val); \
-		if (_ret) { \
-			pr_err("Error reading key:%s. err:%d\n", _key, _ret); \
-			goto bcl_dev_exit; \
-		} \
+	_ret = of_property_read_u32(_node, _key, &_val); \
+	if (_ret) { \
+		pr_err("Error reading key:%s. err:%d\n", _key, _ret); \
+		goto bcl_dev_exit; \
+	} \
 		_dest = _val; \
-	} while (0)
+} while (0)
 
 #define READ_OPTIONAL_PROP(_node, _key, _val, _ret, _dest) do { \
-		_ret = of_property_read_u32(_node, _key, &_val); \
-		if (_ret && _ret != -EINVAL) { \
-			pr_err("Error reading key:%s. err:%d\n", _key, _ret); \
-			goto bcl_dev_exit; \
-		} else if (!_ret) { \
-			_dest = _val; \
-		} \
-	} while (0)
+	_ret = of_property_read_u32(_node, _key, &_val); \
+	if (_ret && _ret != -EINVAL) { \
+		pr_err("Error reading key:%s. err:%d\n", _key, _ret); \
+		goto bcl_dev_exit; \
+	} else if (!_ret) { \
+		_dest = _val; \
+	} \
+} while (0)
 
 enum bcl_monitor_state {
 	BCL_PARAM_INACTIVE,
@@ -91,37 +91,37 @@ enum bcl_monitor_state {
 };
 
 struct bcl_peripheral_data {
-	struct bcl_param_data   *param_data;
-	struct bcl_driver_ops   ops;
-	enum bcl_monitor_state  state;
-	struct delayed_work     poll_work;
-	int                     irq_num;
-	int                     high_trip;
-	int                     low_trip;
-	int                     trip_val;
-	int                     scaling_factor;
-	int                     offset_factor_num;
-	int                     offset_factor_den;
-	int                     offset;
-	int                     gain_factor_num;
-	int                     gain_factor_den;
-	int                     gain;
-	uint32_t                polling_delay_ms;
-	int			inhibit_derating_ua;
-	int (*read_max)         (int *adc_value);
-	int (*clear_max)        (void);
-	struct mutex            state_trans_lock;
+	struct bcl_param_data *param_data;
+	struct bcl_driver_ops ops;
+	enum bcl_monitor_state state;
+	struct delayed_work poll_work;
+	int irq_num;
+	int high_trip;
+	int low_trip;
+	int trip_val;
+	int scaling_factor;
+	int offset_factor_num;
+	int offset_factor_den;
+	int offset;
+	int gain_factor_num;
+	int gain_factor_den;
+	int gain;
+	uint32_t polling_delay_ms;
+	int inhibit_derating_ua;
+	int (*read_max) (int *adc_value);
+	int (*clear_max) (void);
+	struct mutex state_trans_lock;
 };
 
 struct bcl_device {
-	bool                    enabled;
-	struct device           *dev;
-	struct spmi_device      *spmi;
-	uint16_t                base_addr;
-	uint16_t                pon_spare_addr;
-	uint8_t                 slave_id;
-	int                     i_src;
-	struct bcl_peripheral_data   param[BCL_PARAM_MAX];
+	bool enabled;
+	struct device *dev;
+	struct spmi_device *spmi;
+	uint16_t base_addr;
+	uint16_t pon_spare_addr;
+	uint8_t slave_id;
+	int i_src;
+	struct bcl_peripheral_data param[BCL_PARAM_MAX];
 };
 
 static struct bcl_device *bcl_perph;
@@ -162,7 +162,7 @@ static int bcl_read_register(int16_t reg_offset, uint8_t *data)
 }
 
 static int bcl_write_general_register(int16_t reg_offset,
-					uint16_t base, uint8_t data)
+	uint16_t base, uint8_t data)
 {
 	int  ret = 0;
 	uint8_t *write_buf = &data;
@@ -187,7 +187,7 @@ static int bcl_write_general_register(int16_t reg_offset,
 static int bcl_write_register(int16_t reg_offset, uint8_t data)
 {
 	return bcl_write_general_register(reg_offset,
-			bcl_perph->base_addr, data);
+		bcl_perph->base_addr, data);
 }
 
 static void convert_vbat_to_adc_val(int *val)
@@ -270,7 +270,7 @@ static int bcl_set_high_ibat(int thresh_value)
 	ibat_ua = thresh_value;
 	convert_ibat_to_adc_val(&thresh_value);
 	pr_debug("Setting Ibat high trip:%d. ADC_val:%d\n", ibat_ua,
-			thresh_value);
+		thresh_value);
 	val = (int8_t)thresh_value;
 	ret = bcl_write_register(BCL_IBAT_TRIP, val);
 	if (ret) {
@@ -280,11 +280,11 @@ static int bcl_set_high_ibat(int thresh_value)
 	bcl_perph->param[BCL_PARAM_CURRENT].high_trip = thresh_value;
 
 	if (bcl_perph->param[BCL_PARAM_CURRENT].inhibit_derating_ua == 0
-			|| bcl_perph->pon_spare_addr == 0)
+		|| bcl_perph->pon_spare_addr == 0)
 		return ret;
 
 	ret = bcl_write_general_register(bcl_perph->pon_spare_addr,
-			PON_SPARE_FULL_CURRENT, val);
+		PON_SPARE_FULL_CURRENT, val);
 	if (ret) {
 		pr_debug("Error accessing PON register. err:%d\n", ret);
 		return ret;
@@ -294,7 +294,7 @@ static int bcl_set_high_ibat(int thresh_value)
 	convert_ibat_to_adc_val(&thresh_value);
 	val = (int8_t)thresh_value;
 	ret = bcl_write_general_register(bcl_perph->pon_spare_addr,
-			PON_SPARE_DERATED_CURRENT, val);
+		PON_SPARE_DERATED_CURRENT, val);
 	if (ret) {
 		pr_debug("Error accessing PON register. err:%d\n", ret);
 		return ret;
@@ -625,7 +625,8 @@ exit_ibat:
 
 reschedule_ibat:
 	mutex_unlock(&perph_data->state_trans_lock);
-	schedule_delayed_work(&perph_data->poll_work,
+	queue_delayed_work(system_power_efficient_wq,
+		&perph_data->poll_work,
 		msecs_to_jiffies(perph_data->polling_delay_ms));
 //	trace_bcl_hw_event("ibat poll low. Exit");
 	return;
@@ -671,7 +672,8 @@ exit_vbat:
 
 reschedule_vbat:
 	mutex_unlock(&perph_data->state_trans_lock);
-	schedule_delayed_work(&perph_data->poll_work,
+	queue_delayed_work(system_power_efficient_wq,
+		&perph_data->poll_work,
 		msecs_to_jiffies(perph_data->polling_delay_ms));
 //	trace_bcl_hw_event("vbat poll high. Exit");
 	return;
@@ -705,7 +707,7 @@ static irqreturn_t bcl_handle_ibat(int irq, void *data)
 			goto exit_intr;
 		}
 		pr_debug("Ibat reached high trip. ibat:%d\n",
-				perph_data->trip_val);
+			perph_data->trip_val);
 //		trace_bcl_hw_state_event("Monitor to Polling. ibat[uA]:",
 //				perph_data->trip_val);
 		disable_irq_nosync(perph_data->irq_num);
@@ -714,7 +716,8 @@ static irqreturn_t bcl_handle_ibat(int irq, void *data)
 //				perph_data->trip_val);
 		perph_data->ops.notify(perph_data->param_data,
 			perph_data->trip_val, BCL_HIGH_TRIP);
-		schedule_delayed_work(&perph_data->poll_work,
+		queue_delayed_work(system_power_efficient_wq,
+			&perph_data->poll_work,
 			msecs_to_jiffies(perph_data->polling_delay_ms));
 	} else {
 		pr_debug("Ignoring interrupt\n");
@@ -761,7 +764,8 @@ static irqreturn_t bcl_handle_vbat(int irq, void *data)
 //				perph_data->trip_val);
 		perph_data->ops.notify(perph_data->param_data,
 			perph_data->trip_val, BCL_LOW_TRIP);
-		schedule_delayed_work(&perph_data->poll_work,
+		queue_delayed_work(system_power_efficient_wq,
+			&perph_data->poll_work,
 			msecs_to_jiffies(perph_data->polling_delay_ms));
 	} else {
 		pr_debug("Ignoring interrupt\n");
@@ -930,14 +934,14 @@ static void power_supply_callback(struct power_supply *psy)
 }
 
 static int bcl_psy_get_property(struct power_supply *psy,
-				enum power_supply_property prop,
-				union power_supply_propval *val)
+	enum power_supply_property prop,
+	union power_supply_propval *val)
 {
 	return 0;
 }
 static int bcl_psy_set_property(struct power_supply *psy,
-				enum power_supply_property prop,
-				const union power_supply_propval *val)
+	enum power_supply_property prop,
+	const union power_supply_propval *val)
 {
 	return -EINVAL;
 }
@@ -1052,11 +1056,11 @@ static int bcl_probe(struct spmi_device *spmi)
 	}
 	mutex_lock(&bcl_perph->param[BCL_PARAM_VOLTAGE].state_trans_lock);
 	ret = devm_request_threaded_irq(&spmi->dev,
-			bcl_perph->param[BCL_PARAM_VOLTAGE].irq_num,
-			NULL, bcl_handle_vbat,
-			IRQF_TRIGGER_RISING | IRQF_ONESHOT,
-			"bcl_vbat_interrupt",
-			&bcl_perph->param[BCL_PARAM_VOLTAGE]);
+		bcl_perph->param[BCL_PARAM_VOLTAGE].irq_num,
+		NULL, bcl_handle_vbat,
+		IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+		"bcl_vbat_interrupt",
+		&bcl_perph->param[BCL_PARAM_VOLTAGE]);
 	if (ret) {
 		dev_err(&spmi->dev, "Error requesting VBAT irq. err:%d", ret);
 		mutex_unlock(
@@ -1072,11 +1076,11 @@ static int bcl_probe(struct spmi_device *spmi)
 
 	mutex_lock(&bcl_perph->param[BCL_PARAM_CURRENT].state_trans_lock);
 	ret = devm_request_threaded_irq(&spmi->dev,
-			bcl_perph->param[BCL_PARAM_CURRENT].irq_num,
-			NULL, bcl_handle_ibat,
-			IRQF_TRIGGER_RISING | IRQF_ONESHOT,
-			"bcl_ibat_interrupt",
-			&bcl_perph->param[BCL_PARAM_CURRENT]);
+		bcl_perph->param[BCL_PARAM_CURRENT].irq_num,
+		NULL, bcl_handle_ibat,
+		IRQF_TRIGGER_RISING | IRQF_ONESHOT,
+		"bcl_ibat_interrupt",
+		&bcl_perph->param[BCL_PARAM_CURRENT]);
 	if (ret) {
 		dev_err(&spmi->dev, "Error requesting IBAT irq. err:%d", ret);
 		mutex_unlock(
@@ -1150,4 +1154,3 @@ static void __exit bcl_perph_exit(void)
 fs_initcall(bcl_perph_init);
 module_exit(bcl_perph_exit);
 MODULE_ALIAS("platform:" BCL_DRIVER_NAME);
-
