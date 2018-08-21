@@ -18,7 +18,7 @@
  * asm/disklabel.h (confuses make)
  */
 #ifndef MAXPARTITIONS
-#define MAXPARTITIONS   8                       /* max. # of partitions */
+#define MAXPARTITIONS 8	/* max. # of partitions */
 #endif
 
 #ifndef u8
@@ -34,10 +34,10 @@
 #endif
 
 struct disklabel {
-    u32	d_magic;				/* must be DISKLABELMAGIC */
+    u32	d_magic; /* must be DISKLABELMAGIC */
     u16	d_type, d_subtype;
-    u8	d_typename[16];
-    u8	d_packname[16];
+    u8 d_typename[16];
+    u8 d_packname[16];
     u32	d_secsize;
     u32	d_nsectors;
     u32	d_ntracks;
@@ -51,7 +51,7 @@ struct disklabel {
     u32	d_headswitch, d_trkseek, d_flags;
     u32	d_drivedata[5];
     u32	d_spare[5];
-    u32	d_magic2;				/* must be DISKLABELMAGIC */
+    u32	d_magic2; /* must be DISKLABELMAGIC */
     u16	d_checksum;
     u16	d_npartitions;
     u32	d_bbsize, d_sbsize;
@@ -59,8 +59,8 @@ struct disklabel {
 	u32	p_size;
 	u32	p_offset;
 	u32	p_fsize;
-	u8	p_fstype;
-	u8	p_frag;
+	u8 p_fstype;
+	u8 p_frag;
 	u16	p_cpg;
     } d_partitions[MAXPARTITIONS];
 };
@@ -68,27 +68,27 @@ struct disklabel {
 
 typedef union __bootblock {
     struct {
-        char			__pad1[64];
-        struct disklabel	__label;
+        char __pad1[64];
+        struct disklabel __label;
     } __u1;
     struct {
-	unsigned long		__pad2[63];
-	unsigned long		__checksum;
+	unsigned long __pad2[63];
+	unsigned long __checksum;
     } __u2;
-    char		bootblock_bytes[512];
-    unsigned long	bootblock_quadwords[64];
+    char bootblock_bytes[512];
+    unsigned long bootblock_quadwords[64];
 } bootblock;
 
-#define	bootblock_label		__u1.__label
-#define bootblock_checksum	__u2.__checksum
+#define	bootblock_label __u1.__label
+#define bootblock_checksum __u2.__checksum
 
 int main(int argc, char ** argv)
 {
-    bootblock		bootblock_from_disk;
-    bootblock		bootloader_image;
-    int			dev, fd;
-    int			i;
-    int			nread;
+    bootblock bootblock_from_disk;
+    bootblock bootloader_image;
+    int dev, fd;
+    int i;
+    int nread;
 
     /* Make sure of the arg count */
     if(argc != 3) {
@@ -134,7 +134,7 @@ int main(int argc, char ** argv)
     bootloader_image.bootblock_checksum = 0;
     for(i = 0; i < 63; i++) {
 	bootloader_image.bootblock_checksum += 
-			bootloader_image.bootblock_quadwords[i];
+		bootloader_image.bootblock_quadwords[i];
     }
 
     /* Write the whole thing out! */
@@ -148,5 +148,3 @@ int main(int argc, char ** argv)
     close(dev);
     exit(0);
 }
-
-

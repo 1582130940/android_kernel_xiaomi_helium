@@ -8,11 +8,11 @@
 # Copyright (C) 1994 by Linus Torvalds
 #
 
-hostprogs-y	:= tools/mkbb tools/objstrip
-targets		:= vmlinux.gz vmlinux \
-		   vmlinux.nh tools/lxboot tools/bootlx tools/bootph \
-		   tools/bootpzh bootloader bootpheader bootpzheader 
-OBJSTRIP	:= $(obj)/tools/objstrip
+hostprogs-y := tools/mkbb tools/objstrip
+targets := vmlinux.gz vmlinux \
+	vmlinux.nh tools/lxboot tools/bootlx tools/bootph \
+	tools/bootpzh bootloader bootpheader bootpzheader
+OBJSTRIP := $(obj)/tools/objstrip
 
 # SRM bootable image.  Copy to offset 512 of a partition.
 $(obj)/bootimage: $(addprefix $(obj)/tools/,mkbb lxboot bootlx) $(obj)/vmlinux.nh
@@ -96,13 +96,13 @@ $(obj)/tools/bootph: $(obj)/bootpheader $(OBJSTRIP) FORCE
 $(obj)/tools/bootpzh: $(obj)/bootpzheader $(OBJSTRIP) FORCE
 	$(call if_changed,objstrip)
 
-LDFLAGS_bootloader   := -static -uvsprintf -T  #-N -relax
-LDFLAGS_bootpheader  := -static -uvsprintf -T  #-N -relax
-LDFLAGS_bootpzheader := -static -uvsprintf -T  #-N -relax
+LDFLAGS_bootloader	:= -static -uvsprintf -T  #-N -relax
+LDFLAGS_bootpheader	:= -static -uvsprintf -T  #-N -relax
+LDFLAGS_bootpzheader	:= -static -uvsprintf -T  #-N -relax
 
-OBJ_bootlx   := $(obj)/head.o $(obj)/main.o
-OBJ_bootph   := $(obj)/head.o $(obj)/bootp.o
-OBJ_bootpzh  := $(obj)/head.o $(obj)/bootpz.o $(obj)/misc.o
+OBJ_bootlx	:= $(obj)/head.o $(obj)/main.o
+OBJ_bootph	:= $(obj)/head.o $(obj)/bootp.o
+OBJ_bootpzh	:= $(obj)/head.o $(obj)/bootpz.o $(obj)/misc.o
 
 $(obj)/bootloader: $(obj)/bootloader.lds $(OBJ_bootlx) $(LIBS_Y) FORCE
 	$(call if_changed,ld)

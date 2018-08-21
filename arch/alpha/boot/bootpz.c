@@ -9,6 +9,7 @@
  * based significantly on the arch/alpha/boot/main.c of Linus Torvalds
  * and the decompression code from MILO.
  */
+
 #include <linux/kernel.h>
 #include <linux/slab.h>
 #include <linux/string.h>
@@ -28,7 +29,6 @@
 #define MALLOC_AREA_SIZE 0x200000 /* 2MB for now */
 /* FIXME FIXME FIXME */
 
-
 /*
   WARNING NOTE
 
@@ -46,7 +46,7 @@ extern unsigned long switch_to_osf_pal(unsigned long nr,
 	unsigned long *vptb);
 
 extern int decompress_kernel(void* destination, void *source,
-			     size_t ksize, size_t kzsize);
+	size_t ksize, size_t kzsize);
 
 extern void move_stack(unsigned long new_stack);
 
@@ -74,13 +74,13 @@ find_pa(unsigned long address)
 
 int
 check_range(unsigned long vstart, unsigned long vend,
-	    unsigned long kstart, unsigned long kend)
+	unsigned long kstart, unsigned long kend)
 {
 	unsigned long vaddr, kaddr;
 
 #ifdef DEBUG_CHECK_RANGE
 	srm_printk("check_range: V[0x%lx:0x%lx] K[0x%lx:0x%lx]\n",
-		   vstart, vend, kstart, kend);
+		vstart, vend, kstart, kend);
 #endif
 	/* do some range checking for detecting an overlap... */
 	for (vaddr = vstart; vaddr <= vend; vaddr += PAGE_SIZE)
@@ -89,9 +89,9 @@ check_range(unsigned long vstart, unsigned long vend,
 		if (kaddr >= kstart && kaddr <= kend)
 		{
 #ifdef DEBUG_CHECK_RANGE
-			srm_printk("OVERLAP: vaddr 0x%lx kaddr 0x%lx"
-				   " [0x%lx:0x%lx]\n",
-				   vaddr, kaddr, kstart, kend);
+	srm_printk("OVERLAP: vaddr 0x%lx kaddr 0x%lx"
+		" [0x%lx:0x%lx]\n",
+			vaddr, kaddr, kstart, kend);
 #endif
 			return 1;
 		}
@@ -180,7 +180,7 @@ extern char _end;
 	((((unsigned long)&_end) + 511) & ~511)
 
 /* Round address to next higher page boundary. */
-#define NEXT_PAGE(a)	(((a) | (PAGE_SIZE - 1)) + 1)
+#define NEXT_PAGE(a) (((a) | (PAGE_SIZE - 1)) + 1)
 
 #ifdef INITRD_IMAGE_SIZE
 # define REAL_INITRD_SIZE INITRD_IMAGE_SIZE
@@ -206,7 +206,6 @@ extern char _end;
 
    These are used in the local defines below.
 */
-  
 
 /* Virtual addresses for the BOOTP image. Note that this includes the
    bootstrapper code as well as the compressed kernel image, and
@@ -220,16 +219,16 @@ extern char _end;
 
 /* Virtual addresses for just the bootstrapper part of the BOOTP image. */
 #define V_BOOTSTRAPPER_START	BOOT_ADDR
-#define V_BOOTSTRAPPER_END	KERNEL_ORIGIN
+#define V_BOOTSTRAPPER_END		KERNEL_ORIGIN
 
 /* Virtual addresses for just the data part of the BOOTP
    image. This may also include the INITRD image, but always
    includes the STACK.
 */
-#define V_DATA_START		KERNEL_ORIGIN
-#define V_INITRD_START		(KERNEL_ORIGIN + KERNEL_Z_SIZE)
+#define V_DATA_START	KERNEL_ORIGIN
+#define V_INITRD_START	(KERNEL_ORIGIN + KERNEL_Z_SIZE)
 #define V_INTRD_END		(V_INITRD_START + REAL_INITRD_SIZE)
-#define V_DATA_END	 	V_BOOT_IMAGE_END
+#define V_DATA_END		V_BOOT_IMAGE_END
 
 /* KSEG addresses for the uncompressed kernel.
 
@@ -237,9 +236,9 @@ extern char _end;
    Note also that the DATA_START address is ZERO_PGE, to which we write
    just before jumping to the kernel image at START_ADDR.
  */
-#define K_KERNEL_DATA_START	ZERO_PGE
+#define K_KERNEL_DATA_START		ZERO_PGE
 #define K_KERNEL_IMAGE_START	START_ADDR
-#define K_KERNEL_IMAGE_END	(START_ADDR + KERNEL_SIZE)
+#define K_KERNEL_IMAGE_END		(START_ADDR + KERNEL_SIZE)
 
 /* Define to where we may have to decompress the kernel image, before
    we move it to the final position, in case of overlap. This will be
@@ -296,12 +295,12 @@ start_kernel(void)
 	/* Validity check the HWRPB. */
 	if (INIT_HWRPB->pagesize != 8192) {
 		srm_printk("Expected 8kB pages, got %ldkB\n",
-		           INIT_HWRPB->pagesize >> 10);
+			INIT_HWRPB->pagesize >> 10);
 		return;
 	}
 	if (INIT_HWRPB->vptb != (unsigned long) VPTB) {
 		srm_printk("Expected vptb at %p, got %p\n",
-			   VPTB, (void *)INIT_HWRPB->vptb);
+			VPTB, (void *)INIT_HWRPB->vptb);
 		return;
 	}
 
@@ -346,7 +345,7 @@ start_kernel(void)
 	   in conflict.
 	 */
 	if (check_range(V_BOOTSTRAPPER_START, V_BOOTSTRAPPER_END,
-			K_KERNEL_DATA_START, K_KERNEL_IMAGE_END))
+		K_KERNEL_DATA_START, K_KERNEL_IMAGE_END))
 	{
 		srm_printk("FATAL ERROR: overlap of bootstrapper code\n");
 		__halt();
@@ -359,14 +358,14 @@ start_kernel(void)
 	   execution.
 	 */
 	if (check_range(V_DATA_START, V_DATA_END,
-			K_KERNEL_IMAGE_START, K_COPY_IMAGE_END))
+		K_KERNEL_IMAGE_START, K_COPY_IMAGE_END))
 	{
 #ifdef DEBUG_ADDRESSES
-		srm_printk("OVERLAP: cannot decompress in place\n");
+	srm_printk("OVERLAP: cannot decompress in place\n");
 #endif
-		uncompressed_image_start = K_COPY_IMAGE_START;
-		uncompressed_image_end = K_COPY_IMAGE_END;
-		must_move = 1;
+	uncompressed_image_start = K_COPY_IMAGE_START;
+	uncompressed_image_end = K_COPY_IMAGE_END;
+	must_move = 1;
 
 		/* Finally, check to see if the range of addresses
 		   occupied by the compressed kernel/INITRD part of
@@ -375,8 +374,8 @@ start_kernel(void)
 		   decompression.
 		*/
 		while (check_range(V_DATA_START, V_DATA_END,
-				   uncompressed_image_start,
-				   uncompressed_image_end))
+			uncompressed_image_start,
+			uncompressed_image_end))
 		{
 #if 0
 			uncompressed_image_start += K_COPY_IMAGE_SIZE;
@@ -395,14 +394,14 @@ start_kernel(void)
 
 #ifdef DEBUG_ADDRESSES
 	srm_printk("Decompressing the kernel...\n"
-		   "...from 0x%lx to 0x%lx size 0x%x\n",
-		   V_DATA_START,
-		   uncompressed_image_start,
-		   KERNEL_SIZE);
+		"...from 0x%lx to 0x%lx size 0x%x\n",
+		V_DATA_START,
+		uncompressed_image_start,
+		KERNEL_SIZE);
 #endif
         decompress_kernel((void *)uncompressed_image_start,
-			  (void *)V_DATA_START,
-			  KERNEL_SIZE, KERNEL_Z_SIZE);
+			(void *)V_DATA_START,
+			KERNEL_SIZE, KERNEL_Z_SIZE);
 
 	/*
 	 * Now, move things to their final positions, if/as required.
@@ -413,13 +412,13 @@ start_kernel(void)
 	/* First, we always move the INITRD image, if present. */
 #ifdef DEBUG_ADDRESSES
 	srm_printk("Moving the INITRD image...\n"
-		   " from 0x%lx to 0x%lx size 0x%x\n",
-		   V_INITRD_START,
-		   initrd_image_start,
-		   INITRD_IMAGE_SIZE);
+		" from 0x%lx to 0x%lx size 0x%x\n",
+		V_INITRD_START,
+		initrd_image_start,
+		INITRD_IMAGE_SIZE);
 #endif
 	memcpy((void *)initrd_image_start, (void *)V_INITRD_START,
-	       INITRD_IMAGE_SIZE);
+		INITRD_IMAGE_SIZE);
 
 #endif /* INITRD_IMAGE_SIZE */
 
@@ -428,11 +427,11 @@ start_kernel(void)
 	 */
 	if (must_move) {
 #ifdef DEBUG_ADDRESSES
-		srm_printk("Moving the uncompressed kernel...\n"
-			   "...from 0x%lx to 0x%lx size 0x%x\n",
-			   uncompressed_image_start,
-			   K_KERNEL_IMAGE_START,
-			   (unsigned)KERNEL_SIZE);
+	srm_printk("Moving the uncompressed kernel...\n"
+		"...from 0x%lx to 0x%lx size 0x%x\n",
+		uncompressed_image_start,
+		K_KERNEL_IMAGE_START,
+		(unsigned)KERNEL_SIZE);
 #endif
 		/*
 		 * Move the stack to a safe place to ensure it won't be
@@ -441,7 +440,7 @@ start_kernel(void)
 		move_stack(initrd_image_start - PAGE_SIZE);
 
 		memcpy((void *)K_KERNEL_IMAGE_START,
-		       (void *)uncompressed_image_start, KERNEL_SIZE);
+			(void *)uncompressed_image_start, KERNEL_SIZE);
 	}
 	
 	/* Clear the zero page, then move the argument list in. */

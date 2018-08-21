@@ -34,7 +34,6 @@
 
 const char * prog_name;
 
-
 static void
 usage (void)
 {
@@ -44,18 +43,17 @@ usage (void)
     exit(1);
 }
 
-
 int
 main (int argc, char *argv[])
 {
     size_t nwritten, tocopy, n, mem_size, fil_size, pad = 0;
     int fd, ofd, i, j, verbose = 0, primary = 0;
     char buf[8192], *inname;
-    struct exec * aout;		/* includes file & aout header */
+    struct exec * aout; /* includes file & aout header */
     long offset;
 #ifdef __ELF__
     struct elfhdr *elf;
-    struct elf_phdr *elf_phdr;	/* program header */
+    struct elf_phdr *elf_phdr; /* program header */
     unsigned long long e_entry;
 #endif
 
@@ -73,7 +71,7 @@ main (int argc, char *argv[])
 		  break;
 
 	      case 'p':
-		  primary = 1;		/* make primary bootblock */
+		  primary = 1; /* make primary bootblock */
 		  break;
 	    }
 	}
@@ -120,8 +118,8 @@ main (int argc, char *argv[])
 	memset(bb, 0, sizeof(bb));
 	strcpy((char *) bb, "Linux SRM bootblock");
 	bb[60] = size / BLOCK_SIZE;	/* count */
-	bb[61] = 1;			/* starting sector # */
-	bb[62] = 0;			/* flags---must be 0 */
+	bb[61] = 1; /* starting sector # */
+	bb[62] = 0; /* flags---must be 0 */
 	for (i = 0; i < 63; ++i) {
 	    sum += bb[i];
 	}

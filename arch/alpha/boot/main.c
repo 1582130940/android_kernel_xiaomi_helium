@@ -56,8 +56,8 @@ find_pa(unsigned long *vptb, void *ptr)
  * itself (through three levels) at virtual address 0x200802000.
  */
 
-#define VPTB	((unsigned long *) 0x200000000)
-#define L1	((unsigned long *) 0x200802000)
+#define VPTB ((unsigned long *) 0x200000000)
+#define L1 ((unsigned long *) 0x200802000)
 
 void
 pal_init(void)
@@ -131,7 +131,7 @@ static inline long load(long dev, unsigned long addr, unsigned long count)
 	bootfile[result] = '\0';
 	if (result)
 		srm_printk("Boot file specification (%s) not implemented\n",
-		       bootfile);
+			bootfile);
 	return callback_read(dev, count, (void *)addr, boot_size/512 + 1);
 }
 

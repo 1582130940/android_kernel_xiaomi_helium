@@ -61,8 +61,8 @@ find_pa(unsigned long *vptb, void *ptr)
  * itself (through three levels) at virtual address 0x200802000.
  */
 
-#define VPTB	((unsigned long *) 0x200000000)
-#define L1	((unsigned long *) 0x200802000)
+#define VPTB ((unsigned long *) 0x200000000)
+#define L1 ((unsigned long *) 0x200802000)
 
 void
 pal_init(void)
@@ -152,12 +152,12 @@ start_kernel(void)
 	srm_printk("Linux/AXP bootp loader for Linux " UTS_RELEASE "\n");
 	if (INIT_HWRPB->pagesize != 8192) {
 		srm_printk("Expected 8kB pages, got %ldkB\n",
-		           INIT_HWRPB->pagesize >> 10);
+			INIT_HWRPB->pagesize >> 10);
 		return;
 	}
 	if (INIT_HWRPB->vptb != (unsigned long) VPTB) {
 		srm_printk("Expected vptb at %p, got %p\n",
-			   VPTB, (void *)INIT_HWRPB->vptb);
+			VPTB, (void *)INIT_HWRPB->vptb);
 		return;
 	}
 	pal_init();
@@ -165,7 +165,7 @@ start_kernel(void)
 	/* The initrd must be page-aligned.  See below for the 
 	   cause of the magic number 5.  */
 	initrd_start = ((START_ADDR + 5*KERNEL_SIZE + PAGE_SIZE) |
-			(PAGE_SIZE-1)) + 1;
+		(PAGE_SIZE-1)) + 1;
 #ifdef INITRD_IMAGE_SIZE
 	srm_printk("Initrd positioned at %#lx\n", initrd_start);
 #endif
@@ -200,8 +200,8 @@ start_kernel(void)
 #ifdef INITRD_IMAGE_SIZE
 	load(initrd_start, KERNEL_ORIGIN+KERNEL_SIZE, INITRD_IMAGE_SIZE);
 #endif
-        load(START_ADDR+(4*KERNEL_SIZE), KERNEL_ORIGIN, KERNEL_SIZE);
-        load(START_ADDR, START_ADDR+(4*KERNEL_SIZE), KERNEL_SIZE);
+	load(START_ADDR+(4*KERNEL_SIZE), KERNEL_ORIGIN, KERNEL_SIZE);
+	load(START_ADDR, START_ADDR+(4*KERNEL_SIZE), KERNEL_SIZE);
 
 	memset((char*)ZERO_PGE, 0, PAGE_SIZE);
 	strcpy((char*)ZERO_PGE, envval);
