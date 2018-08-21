@@ -1,7 +1,7 @@
 /* FPC1020 Touch sensor driver
  *
  * Copyright (c) 2013,2014 Fingerprint Cards AB <tech@fingerprints.com>
- * Copyright (C) 2016 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License Version 2
@@ -20,21 +20,21 @@
 #endif
 
 /* -------------------------------------------------------------------- */
-/* function prototypes							*/
+/* function prototypes													*/
 /* -------------------------------------------------------------------- */
 static int fpc1020_write_lpm_setup(fpc1020_data_t *fpc1020);
 
 static int fpc1020_wait_finger_present_lpm(fpc1020_data_t *fpc1020);
 
 /* -------------------------------------------------------------------- */
-/* driver constants							*/
+/* driver constants														*/
 /* -------------------------------------------------------------------- */
 #define FPC1020_KEY_FINGER_PRESENT	KEY_WAKEUP	/* 143*/
 
 #define FPC1020_INPUT_POLL_TIME_MS	1000u
 
 /* -------------------------------------------------------------------- */
-/* function definitions							*/
+/* function definitions													*/
 /* -------------------------------------------------------------------- */
 int fpc1020_input_init(fpc1020_data_t *fpc1020)
 {
@@ -52,7 +52,7 @@ int fpc1020_input_init(fpc1020_data_t *fpc1020)
 	if (!error) {
 		fpc1020->input_dev->name = FPC1020_DEV_NAME;
 
-		set_bit(EV_KEY,		fpc1020->input_dev->evbit);
+		set_bit(EV_KEY, fpc1020->input_dev->evbit);
 
 		set_bit(FPC1020_KEY_FINGER_PRESENT, fpc1020->input_dev->keybit);
 
@@ -101,9 +101,9 @@ int fpc1020_input_task(fpc1020_data_t *fpc1020)
 		if (error == 0) {
 			dev_dbg(&fpc1020->spi->dev, "%s: Sending wake key event.\n", __func__);
 			input_report_key(fpc1020->input_dev,
-						FPC1020_KEY_FINGER_PRESENT, 1);
+				FPC1020_KEY_FINGER_PRESENT, 1);
 			input_report_key(fpc1020->input_dev,
-						FPC1020_KEY_FINGER_PRESENT, 0);
+				FPC1020_KEY_FINGER_PRESENT, 0);
 
 			input_sync(fpc1020->input_dev);
 		}
@@ -161,8 +161,8 @@ static int fpc1020_wait_finger_present_lpm(fpc1020_data_t *fpc1020)
 	int zone_raw = 0;
 
 	bool wakeup_center = false;
-	bool wakeup_ext    = false;
-	bool wakeup        = false;
+	bool wakeup_ext = false;
+	bool wakeup = false;
 
 	error = fpc1020_wake_up(fpc1020);
 
@@ -200,31 +200,31 @@ static int fpc1020_wait_finger_present_lpm(fpc1020_data_t *fpc1020)
 			/* Wait for the finger to stabilise if a "finger" was detected */
 			error = fpc1020_wait_finger_present(fpc1020);
 
-			/* Are enough finger detect zones covered by the finger? */
-			if (!error)
-				error = fpc1020_check_finger_present_raw(fpc1020);
+		/* Are enough finger detect zones covered by the finger? */
+		if (!error)
+			error = fpc1020_check_finger_present_raw(fpc1020);
 
-			zone_raw = (error >= 0) ? error : 0;
+		zone_raw = (error >= 0) ? error : 0;
 
-			if (error >= 0) {
-				error = 0;
+		if (error >= 0) {
+			error = 0;
 
-				wakeup_center = (zone_raw & zmask_5) ||
-						(zone_raw & zmask_6);
+			wakeup_center = (zone_raw & zmask_5) ||
+				(zone_raw & zmask_6);
 
 			/* Todo: refined extended processing ? */
-				wakeup_ext = ((zone_raw & zmask_ext) == zmask_ext);
+			wakeup_ext = ((zone_raw & zmask_ext) == zmask_ext);
 
-			} else {
-				wakeup_ext    = false;
-				wakeup_center = false;
-			}
+		} else {
+			wakeup_ext    = false;
+			wakeup_center = false;
+		}
 
-			if (wakeup_center && wakeup_ext) {
-				dev_dbg(&fpc1020->spi->dev,
-					"%s Wake up !\n", __func__);
-				wakeup = true;
-			}
+		if (wakeup_center && wakeup_ext) {
+			dev_dbg(&fpc1020->spi->dev,
+				"%s Wake up !\n", __func__);
+			wakeup = true;
+		}
 		} else {
 			dev_dbg(&fpc1020->spi->dev, "%s: interrupt reg = 0x%x\n", __func__, error);
 			error = 0;

@@ -24,7 +24,7 @@
  *
  *
  * Copyright (c) 2015 Fingerprint Cards AB <tech@fingerprints.com>
- * Copyright (C) 2016 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License Version 2
@@ -57,16 +57,16 @@
 
 struct fpc1020_data {
 	struct device *dev;
-	int  irq_gpio;
+	int irq_gpio;
 	bool irq_enabled;
-	int  rst_gpio;
-	int  fp_id_gpio;
-	int  wakeup_enabled;
+	int rst_gpio;
+	int fp_id_gpio;
+	int wakeup_enabled;
 
-	struct pinctrl         *ts_pinctrl;
-	struct pinctrl_state   *gpio_state_active;
-	struct pinctrl_state   *gpio_state_suspend;
-	struct wake_lock        ttw_wl;
+	struct pinctrl *ts_pinctrl;
+	struct pinctrl_state *gpio_state_active;
+	struct pinctrl_state *gpio_state_suspend;
+	struct wake_lock ttw_wl;
 #ifdef CONFIG_FB
 	struct notifier_block fb_notifier;
 	struct work_struct reset_work;
@@ -84,13 +84,13 @@ enum {
 
 #ifdef CONFIG_FB
 static int fpc1020_fb_notifier_cb(struct notifier_block *self,
-		unsigned long event, void *data)
+	unsigned long event, void *data)
 {
 	int *transition;
 	struct fb_event *evdata = data;
 	struct fpc1020_data *fpc1020 =
-			container_of(self, struct fpc1020_data,
-			fb_notifier);
+		container_of(self, struct fpc1020_data,
+		fb_notifier);
 
 	if (evdata && evdata->data && fpc1020) {
 		if (event == FB_EVENT_BLANK) {
@@ -120,7 +120,7 @@ static int fpc1020_fb_notifier_cb(struct notifier_block *self,
 #endif
 
 static int fpc1020_request_named_gpio(struct fpc1020_data *fpc1020,
-		const char *label, int *gpio)
+	const char *label, int *gpio)
 {
 	struct device *dev = fpc1020->dev;
 	struct device_node *np = dev->of_node;
@@ -129,7 +129,7 @@ static int fpc1020_request_named_gpio(struct fpc1020_data *fpc1020,
 		dev_err(dev, "failed to get '%s'\n", label);
 		return rc;
 	}
-	*gpio = rc;
+	 *gpio = rc;
 	rc = devm_gpio_request(dev, *gpio, label);
 	if (rc) {
 		dev_err(dev, "failed to request gpio %d\n", *gpio);
@@ -204,8 +204,8 @@ static int fpc1020_pinctrl_select_tee(struct fpc1020_data *fpc1020, bool on)
  * handler should perform sysf_notify to allow userland to poll the node.
  */
 static ssize_t irq_get(struct device *device,
-			     struct device_attribute *attribute,
-			     char *buffer)
+	struct device_attribute *attribute,
+	char *buffer)
 {
 	struct fpc1020_data *fpc1020 = dev_get_drvdata(device);
 	int irq = gpio_get_value(fpc1020->irq_gpio);
@@ -217,8 +217,8 @@ static ssize_t irq_get(struct device *device,
  * and return success, used for latency measurement.
  */
 static ssize_t irq_ack(struct device *device,
-			     struct device_attribute *attribute,
-			     const char *buffer, size_t count)
+	struct device_attribute *attribute,
+	const char *buffer, size_t count)
 {
 	struct fpc1020_data *fpc1020 = dev_get_drvdata(device);
 	dev_dbg(fpc1020->dev, "%s\n", __func__);
@@ -253,7 +253,7 @@ static ssize_t enable_wakeup_store(struct device *dev,
 	}
 }
 static DEVICE_ATTR(enable_wakeup, S_IWUSR | S_IRUSR, enable_wakeup_show,
-		   enable_wakeup_store);
+	enable_wakeup_store);
 
 static struct attribute *attributes[] = {
 	&dev_attr_irq.attr,
@@ -271,7 +271,7 @@ static irqreturn_t fpc1020_irq_handler(int irq, void *handle)
 	dev_dbg(fpc1020->dev, "%s\n", __func__);
 
 	/* Make sure 'wakeup_enabled' is updated before using it
-	** since this is interrupt context (other thread...) */
+	 * * since this is interrupt context (other thread...) */
 	smp_rmb();
 
 	if (fpc1020->wakeup_enabled) {
@@ -285,7 +285,7 @@ static irqreturn_t fpc1020_irq_handler(int irq, void *handle)
 }
 
 /* -------------------------------------------------------------------- */
-static int __maybe_unused fpc1020_get_fp_id_tee(struct fpc1020_data *fpc1020)
+static int fpc1020_get_fp_id_tee(struct fpc1020_data *fpc1020)
 {
 	struct device *dev = fpc1020->dev;
 	struct device_node *np = dev->of_node;
@@ -304,7 +304,7 @@ static int __maybe_unused fpc1020_get_fp_id_tee(struct fpc1020_data *fpc1020)
 
 	if (gpio_is_valid(fpc1020->fp_id_gpio)) {
 		error = devm_gpio_request_one(fpc1020->dev, fpc1020->fp_id_gpio,
-					      GPIOF_IN, "fpc1020_fp_id");
+			GPIOF_IN, "fpc1020_fp_id");
 		if (error < 0) {
 			dev_err(dev,
 				"Failed to request fpc fp_id_gpio %d, error %d\n",
@@ -344,13 +344,13 @@ static int __maybe_unused fpc1020_get_fp_id_tee(struct fpc1020_data *fpc1020)
 		usleep_range(2000, 3000); /* 2000us abs min. */
 		pull_down_value = gpio_get_value(fpc1020->fp_id_gpio);
 		usleep_range(2000, 3000); /* 2000us abs min. */
-		if ((pull_up_value == pull_down_value) && (pull_up_value == 0))
+		if ((pull_up_value == pull_down_value) && (pull_up_value == 0)) {
 			fp_id = FP_ID_LOW_0;
-		else if ((pull_up_value == pull_down_value) && (pull_up_value == 1))
+		} else if ((pull_up_value == pull_down_value) && (pull_up_value == 1)) {
 			fp_id = FP_ID_HIGH_1;
-		else
+		} else {
 			fp_id = FP_ID_FLOAT_2;
-
+		}
 	} else {
 		dev_err(dev,
 				"fpc vendor id FP_GPIO is invalid !!!\n");
@@ -378,7 +378,7 @@ static int fpc1020_tee_probe(struct platform_device *pdev)
 	struct device_node *np = dev->of_node;
 
 	struct fpc1020_data *fpc1020 = devm_kzalloc(dev, sizeof(*fpc1020),
-			GFP_KERNEL);
+		GFP_KERNEL);
 	if (!fpc1020) {
 		dev_err(dev,
 			"failed to allocate memory for struct fpc1020_data\n");
@@ -400,7 +400,7 @@ static int fpc1020_tee_probe(struct platform_device *pdev)
 	fpc1020->wakeup_enabled = 1;
 
 	rc = fpc1020_request_named_gpio(fpc1020, "fpc,irq-gpio",
-			&fpc1020->irq_gpio);
+		&fpc1020->irq_gpio);
 	if (rc)
 		goto exit;
 
@@ -413,7 +413,7 @@ static int fpc1020_tee_probe(struct platform_device *pdev)
 	}
 
 	rc = fpc1020_request_named_gpio(fpc1020, "fpc,reset-gpio",
-			&fpc1020->rst_gpio);
+		&fpc1020->rst_gpio);
 	if (rc)
 		goto exit;
 
@@ -430,15 +430,15 @@ static int fpc1020_tee_probe(struct platform_device *pdev)
 	irqf = IRQF_TRIGGER_RISING | IRQF_ONESHOT;
 
 	rc = devm_request_threaded_irq(dev, gpio_to_irq(fpc1020->irq_gpio),
-			NULL, fpc1020_irq_handler, irqf,
-			dev_name(dev), fpc1020);
+		NULL, fpc1020_irq_handler, irqf,
+		dev_name(dev), fpc1020);
 	if (rc) {
 		dev_err(dev, "could not request irq %d\n",
-				gpio_to_irq(fpc1020->irq_gpio));
+			gpio_to_irq(fpc1020->irq_gpio));
 		goto exit;
 	}
 	dev_info(dev, "requested irq %d\n", gpio_to_irq(fpc1020->irq_gpio));
-	/* Request that the interrupt should be wakeable*/
+	/* Request that the interrupt should be wakeable */
 	if (fpc1020->wakeup_enabled) {
 		enable_irq_wake(gpio_to_irq(fpc1020->irq_gpio));
 	}
@@ -513,7 +513,7 @@ static struct platform_driver fpc1020_driver = {
 		.owner = THIS_MODULE,
 		.of_match_table = fpc1020_of_match,
 #ifdef CONFIG_PM
-		.pm = &fpc1020_dev_pm_ops,
+	.pm = &fpc1020_dev_pm_ops,
 #endif
 	},
 	.probe = fpc1020_tee_probe,

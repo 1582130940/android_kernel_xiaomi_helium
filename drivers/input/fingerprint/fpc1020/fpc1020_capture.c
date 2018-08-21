@@ -1,7 +1,7 @@
 /* FPC1020 Touch sensor driver
  *
  * Copyright (c) 2013,2014 Fingerprint Cards AB <tech@fingerprints.com>
- * Copyright (C) 2016 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License Version 2
@@ -20,14 +20,8 @@
 #include "fpc1020_capture.h"
 #endif
 
-/* -------------------------------------------------------------------- */
-/* function prototypes							*/
-/* -------------------------------------------------------------------- */
 static size_t fpc1020_calc_image_size(fpc1020_data_t *fpc1020);
 
-/* -------------------------------------------------------------------- */
-/* function definitions							*/
-/* -------------------------------------------------------------------- */
 int fpc1020_init_capture(fpc1020_data_t *fpc1020)
 {
 	fpc1020->capture.state = FPC1020_CAPTURE_STATE_IDLE;
@@ -40,13 +34,11 @@ int fpc1020_init_capture(fpc1020_data_t *fpc1020)
 	return 0;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_write_capture_setup(fpc1020_data_t *fpc1020)
 {
 	return fpc1020_write_sensor_setup(fpc1020);
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_write_test_setup(fpc1020_data_t *fpc1020, u16 pattern)
 {
 	int error = 0;
@@ -77,7 +69,6 @@ out:
 	return error;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_write_cb_test_setup_102x(fpc1020_data_t *fpc1020, bool invert)
 {
 	int error = 0;
@@ -134,7 +125,6 @@ out:
 	return error;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_write_cb_test_setup_1155(fpc1020_data_t *fpc1020, bool invert)
 {
 	int error = 0;
@@ -196,7 +186,6 @@ out:
 	return error;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_write_cb_test_setup_1022(fpc1020_data_t *fpc1020, bool invert)
 {
 	int error = 0;
@@ -239,13 +228,11 @@ out:
 	return error;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_write_cb_test_setup_1145(fpc1020_data_t *fpc1020, bool invert)
 {
 	return fpc1020_write_cb_test_setup_1155(fpc1020, invert);
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_write_cb_test_setup(fpc1020_data_t *fpc1020, bool invert)
 {
 	int error = 0;
@@ -254,12 +241,15 @@ int fpc1020_write_cb_test_setup(fpc1020_data_t *fpc1020, bool invert)
 	case FPC1020_CHIP_1022X:
 		error = fpc1020_write_cb_test_setup_1022(fpc1020, invert);
 		break;
+
 	case FPC1020_CHIP_1155X:
 		error = fpc1020_write_cb_test_setup_1155(fpc1020, invert);
 		break;
+
 	case FPC1020_CHIP_1145X:
 		error = fpc1020_write_cb_test_setup_1145(fpc1020, invert);
 		break;
+
 	default:
 		error = fpc1020_write_cb_test_setup_102x(fpc1020, invert);
 		break;
@@ -267,7 +257,6 @@ int fpc1020_write_cb_test_setup(fpc1020_data_t *fpc1020, bool invert)
 	return error;
 }
 
-/* -------------------------------------------------------------------- */
 bool fpc1020_capture_check_ready(fpc1020_data_t *fpc1020)
 {
 	fpc1020_capture_state_t state = fpc1020->capture.state;
@@ -277,7 +266,6 @@ bool fpc1020_capture_check_ready(fpc1020_data_t *fpc1020)
 		(state == FPC1020_CAPTURE_STATE_FAILED);
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_capture_task(fpc1020_data_t *fpc1020)
 {
 	struct timespec ts_t1, ts_t2, ts_t3, ts_delta;
@@ -368,10 +356,10 @@ int fpc1020_capture_task(fpc1020_data_t *fpc1020)
 		goto out_error;
 
 	error = fpc1020_capture_set_crop(fpc1020,
-					fpc1020->setup.capture_col_start,
-					fpc1020->setup.capture_col_groups,
-					fpc1020->setup.capture_row_start,
-					fpc1020->setup.capture_row_count);
+			fpc1020->setup.capture_col_start,
+			fpc1020->setup.capture_col_groups,
+			fpc1020->setup.capture_row_start,
+			fpc1020->setup.capture_row_count);
 	if (error < 0)
 		goto out_error;
 
@@ -393,7 +381,7 @@ int fpc1020_capture_task(fpc1020_data_t *fpc1020)
 
 	if (wait_finger_down && fpc1020->capture.deferred_finger_up) {
 		fpc1020->capture.state =
-				FPC1020_CAPTURE_STATE_WAIT_FOR_FINGER_UP;
+			FPC1020_CAPTURE_STATE_WAIT_FOR_FINGER_UP;
 
 		dev_dbg(&fpc1020->spi->dev, "Waiting for (deferred) finger up\n");
 
@@ -409,7 +397,7 @@ int fpc1020_capture_task(fpc1020_data_t *fpc1020)
 
 	if (wait_finger_down) {
 		fpc1020->capture.state =
-				FPC1020_CAPTURE_STATE_WAIT_FOR_FINGER_DOWN;
+			FPC1020_CAPTURE_STATE_WAIT_FOR_FINGER_DOWN;
 
 		error = fpc1020_capture_wait_finger_down(fpc1020);
 
@@ -466,15 +454,15 @@ int fpc1020_capture_task(fpc1020_data_t *fpc1020)
 		fpc1020->capture.state = FPC1020_CAPTURE_STATE_FETCH;
 
 		error = fpc1020_fetch_image(fpc1020,
-					    fpc1020->huge_buffer,
-					    image_offset,
-					    image_byte_size,
-					    (size_t)fpc1020->huge_buffer_size);
+				fpc1020->huge_buffer,
+				image_offset,
+				image_byte_size,
+				(size_t)fpc1020->huge_buffer_size);
 		if (error < 0)
 			goto out_error;
 
 		fpc1020->capture.available_bytes += (error >= 0) ?
-							(int)image_byte_size : 0;
+				(int)image_byte_size : 0;
 		fpc1020->capture.last_error = error;
 
 		getnstimeofday(&ts_t3);
@@ -506,7 +494,7 @@ int fpc1020_capture_task(fpc1020_data_t *fpc1020)
 
 	if (wait_finger_up) {
 		fpc1020->capture.state =
-				FPC1020_CAPTURE_STATE_WAIT_FOR_FINGER_UP;
+			FPC1020_CAPTURE_STATE_WAIT_FOR_FINGER_UP;
 
 		error = fpc1020_capture_finger_detect_settings(fpc1020);
 		if (error < 0)
@@ -550,7 +538,7 @@ out_interrupted:
 			time_settings_us[capture_count],
 			time_capture_us[capture_count],
 			time_settings_us[capture_count] +
-				time_capture_us[capture_count]);
+			time_capture_us[capture_count]);
 
 		time_capture_sum_us += time_settings_us[capture_count];
 		time_capture_sum_us += time_capture_us[capture_count];
@@ -576,7 +564,6 @@ out_error:
 	return error;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_capture_wait_finger_down(fpc1020_data_t *fpc1020)
 {
 	int error;
@@ -602,7 +589,6 @@ int fpc1020_capture_wait_finger_down(fpc1020_data_t *fpc1020)
 	return (finger_down) ? 0 : error;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_capture_wait_finger_up(fpc1020_data_t *fpc1020)
 {
 	int error = 0;
@@ -626,7 +612,6 @@ int fpc1020_capture_wait_finger_up(fpc1020_data_t *fpc1020)
 	return (finger_up) ? 0 : error;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_capture_settings(fpc1020_data_t *fpc1020, int select)
 {
 	int error = 0;
@@ -667,7 +652,7 @@ out_err:
 }
 
 int fpc1020_capture_set_sample_mode(fpc1020_data_t *fpc1020,
-						unsigned int samples)
+	unsigned int samples)
 {
 	int error = 0;
 	fpc1020_reg_access_t reg;
@@ -727,7 +712,6 @@ out_err:
 	return error;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_capture_finger_detect_settings(fpc1020_data_t *fpc1020)
 {
 	dev_dbg(&fpc1020->spi->dev, "%s\n", __func__);
@@ -735,36 +719,34 @@ int fpc1020_capture_finger_detect_settings(fpc1020_data_t *fpc1020)
 	return fpc1020_capture_settings(fpc1020, FPC1020_MAX_ADC_SETTINGS - 1);
 }
 
-/* -------------------------------------------------------------------- */
 static size_t fpc1020_calc_image_size(fpc1020_data_t *fpc1020)
 {
 	int image_byte_size = fpc1020->setup.capture_row_count *
-				fpc1020->setup.capture_col_groups *
-				fpc1020->chip.adc_group_size;
+		fpc1020->setup.capture_col_groups *
+		fpc1020->chip.adc_group_size;
 
 	dev_dbg(&fpc1020->spi->dev, "%s Rows %d->%d,Cols %d->%d (%d bytes)\n",
-				__func__,
-				fpc1020->setup.capture_row_start,
-				fpc1020->setup.capture_row_start
-				+ fpc1020->setup.capture_row_count - 1,
-				fpc1020->setup.capture_col_start
-					* fpc1020->chip.adc_group_size,
-				(fpc1020->setup.capture_col_start
-					* fpc1020->chip.adc_group_size)
-				+ (fpc1020->setup.capture_col_groups *
-					fpc1020->chip.adc_group_size) - 1,
-				image_byte_size
-				);
+		__func__,
+		fpc1020->setup.capture_row_start,
+		fpc1020->setup.capture_row_start
+		+ fpc1020->setup.capture_row_count - 1,
+		fpc1020->setup.capture_col_start
+		* fpc1020->chip.adc_group_size,
+		(fpc1020->setup.capture_col_start
+		* fpc1020->chip.adc_group_size)
+		+ (fpc1020->setup.capture_col_groups *
+		fpc1020->chip.adc_group_size) - 1,
+		image_byte_size
+		);
 
 	return image_byte_size;
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_capture_set_crop(fpc1020_data_t *fpc1020,
-					int first_column,
-					int num_columns,
-					int first_row,
-					int num_rows)
+	int first_column,
+	int num_columns,
+	int first_row,
+	int num_rows)
 {
 	fpc1020_reg_access_t reg;
 	u32 temp_u32;
@@ -781,11 +763,10 @@ int fpc1020_capture_set_crop(fpc1020_data_t *fpc1020,
 	return fpc1020_reg_access(fpc1020, &reg);
 }
 
-/* -------------------------------------------------------------------- */
 int fpc1020_capture_buffer(fpc1020_data_t *fpc1020,
-				u8 *data,
-				size_t offset,
-				size_t image_size_bytes)
+	u8 *data,
+	size_t offset,
+	size_t image_size_bytes)
 {
 	int error = 0;
 
@@ -799,10 +780,10 @@ int fpc1020_capture_buffer(fpc1020_data_t *fpc1020,
 		goto out_error;
 
 	error = fpc1020_fetch_image(fpc1020,
-				    data,
-				    offset,
-				    image_size_bytes,
-				    (size_t)fpc1020->huge_buffer_size);
+			data,
+			offset,
+			image_size_bytes,
+			(size_t)fpc1020->huge_buffer_size);
 	if (error < 0)
 		goto out_error;
 
@@ -814,7 +795,6 @@ out_error:
 	return error;
 }
 
-/* -------------------------------------------------------------------- */
 extern int fpc1020_capture_deferred_task(fpc1020_data_t *fpc1020)
 {
 	int error = 0;
@@ -829,5 +809,3 @@ extern int fpc1020_capture_deferred_task(fpc1020_data_t *fpc1020)
 
 	return error;
 }
-
-/* -------------------------------------------------------------------- */

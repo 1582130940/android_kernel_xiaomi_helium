@@ -1,7 +1,7 @@
 /* FPC1020 Touch sensor driver
  *
  * Copyright (c) 2013,2014 Fingerprint Cards AB <tech@fingerprints.com>
- * Copyright (C) 2016 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License Version 2
@@ -28,21 +28,21 @@ extern int fpc1020_capture_wait_finger_up(fpc1020_data_t *fpc1020);
 extern int fpc1020_capture_settings(fpc1020_data_t *fpc1020, int select);
 
 extern int fpc1020_capture_set_sample_mode(fpc1020_data_t *fpc1020,
-						unsigned int samples);
+	unsigned int samples);
 
 extern int fpc1020_capture_set_crop(fpc1020_data_t *fpc1020,
-					int first_column,
-					int num_columns,
-					int first_row,
-					int num_rows);
+	int first_column,
+	int num_columns,
+	int first_row,
+	int num_rows);
 
 extern int fpc1020_capture_buffer(fpc1020_data_t *fpc1020,
-					u8 *data,
-					size_t offset,
-					size_t image_size_bytes);
+	u8 *data,
+	size_t offset,
+	size_t image_size_bytes);
 
 extern int fpc1020_capture_deferred_task(fpc1020_data_t *fpc1020);
 
 extern int fpc1020_capture_finger_detect_settings(fpc1020_data_t *fpc1020);
 
-#endif /* LINUX_SPI_FPC1020_CAPTURE_H */
+#endif

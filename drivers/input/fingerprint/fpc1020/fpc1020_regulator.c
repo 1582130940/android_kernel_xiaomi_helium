@@ -1,7 +1,7 @@
 /* FPC1020 Touch sensor driver
  *
  * Copyright (c) 2013,2014 Fingerprint Cards AB <tech@fingerprints.com>
- * Copyright (C) 2016 XiaoMi, Inc.
+ * Copyright (C) 2018 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License Version 2
@@ -41,7 +41,7 @@ int fpc1020_regulator_configure(fpc1020_data_t *fpc1020)
 
 	if (regulator_count_voltages(fpc1020->vdd_tx) > 0) {
 		error = regulator_set_voltage(fpc1020->vdd_tx,
-						SUPPLY_TX_MIN, SUPPLY_TX_MAX);
+				SUPPLY_TX_MIN, SUPPLY_TX_MAX);
 		if (error) {
 			dev_err(&fpc1020->spi->dev,
 				"regulator set(tx) failed, error=%d\n", error);
@@ -77,22 +77,15 @@ int fpc1020_regulator_set(fpc1020_data_t *fpc1020, bool enable)
 	if (fpc1020->vdd_tx == NULL) {
 		dev_err(&fpc1020->spi->dev,
 			"Regulators not set\n");
-			return -EINVAL;
+		return -EINVAL;
 	}
 
 	if (enable) {
 		dev_dbg(&fpc1020->spi->dev, "%s on\n", __func__);
 
-		/******
-		  Do we really need to set current?
-		  How would it affect the vibrator that shares this regulator?
-
-		regulator_set_optimum_mode(fpc1020->vcc_spi,
-					SUPPLY_SPI_REQ_CURRENT);
-		*/
 
 		error = (regulator_is_enabled(fpc1020->vdd_tx) == 0) ?
-					regulator_enable(fpc1020->vdd_tx) : 0;
+				regulator_enable(fpc1020->vdd_tx) : 0;
 
 		if (error) {
 			dev_err(&fpc1020->spi->dev,
@@ -104,8 +97,8 @@ int fpc1020_regulator_set(fpc1020_data_t *fpc1020, bool enable)
 		dev_dbg(&fpc1020->spi->dev, "%s off\n", __func__);
 
 		error = (fpc1020->power_enabled &&
-			regulator_is_enabled(fpc1020->vdd_tx) > 0) ?
-				 regulator_disable(fpc1020->vdd_tx) : 0;
+				regulator_is_enabled(fpc1020->vdd_tx) > 0) ?
+				regulator_disable(fpc1020->vdd_tx) : 0;
 
 		if (error) {
 			dev_err(&fpc1020->spi->dev,
