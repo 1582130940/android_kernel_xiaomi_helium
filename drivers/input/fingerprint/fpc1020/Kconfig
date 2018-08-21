@@ -2,8 +2,8 @@ config FINGERPRINT_FPC1020
 	tristate "Finger print card FPC"
 	depends on INPUT_FINGERPRINT
 	help
-		Say Y here to enable support for retrieving self-test reports.
+	 Say Y here to enable support for retrieving self-test reports.
 
-		If unsure, say N.
+	 If unsure, say N.
 
-	To compile this driver as a module, choose M here.
+	 To compile this driver as a module, choose M here.
